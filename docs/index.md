@@ -33,7 +33,7 @@ Les altérations d'état sont au cœur de la stratégie. Voici comment elles fon
 | **Brûlure**      | Dégâts de feu       | Inflige 3% des PV Max ou 10% des PV manquants (le plus bas).                                 |
 | **Putréfaction** | Dégâts graves       | Inflige 5% des PV Max à chaque tour.                                                         |
 | **Étourdi**      | Perte de tour       | L'entité ne peut pas agir durant son prochain tour.                                          |
-| **Épines**       | Renvoi de dégâts    | Renvoie 10% des dégâts subis + 50% de la Vigueur du joueur.                                  |
+| **Épines**       | Renvoi de dégâts    | Renvoie 15% des dégâts subis + la Vigueur (de base) du joueur / 2.                           |
 
 ---
 
