@@ -2,8 +2,6 @@
 
 Bienvenue dans le guide officiel de **Elden Chill**. Que tu sois un Sans-Éclat débutant ou un Seigneur d'Elden en devenir, ce grimoire contient toutes les vérités extraites directement du code de l'Entre-Terre.
 
----
-
 ## 📜 Mécaniques de Base
 
 Le monde de Elden Chill suit des règles strictes mais justes pour assurer une progression "chill" mais stratégique.

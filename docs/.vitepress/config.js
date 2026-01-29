@@ -9,16 +9,21 @@ export default {
     logo: "/favicon.ico", // Si tu en as une
     nav: [
       { text: "Accueil", link: "/" },
+      { text: "Objets", link: "/items" },
+      { text: "Bestiaire", link: "/bestiary" },
+      { text: "Biomes", link: "/biomes" },
+    ],
+    sidebar: [
       {
         text: "Données",
         items: [
           { text: "Équipement", link: "/items" },
-          { text: "Bestiaire", link: "/bestiaire" },
+          { text: "Bestiaire", link: "/bestiary" },
+          { text: "Biomes", link: "/biomes" },
         ],
       },
-      { text: "Mécaniques", link: "/mechanics" },
     ],
-    // Ajoute un footer pour le style "chill"
+
     footer: {
       message: "Que la Grâce guide tes pas.",
       copyright: "© 2026 Elden Chill",
