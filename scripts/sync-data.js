@@ -36,7 +36,7 @@ async function getRemoteData(fileName) {
 }
 
 async function startSync() {
-  console.log("⚔️ Synchronisation des butins rares...");
+  console.log("⚔️ Correction de la table des butins des Boss...");
   try {
     const monsterData = await getRemoteData("monster.js");
     const itemData = await getRemoteData("item.js");
@@ -46,8 +46,18 @@ async function startSync() {
     const MONSTERS = monsterData?.MONSTERS || {};
     const ITEMS = itemData?.ITEMS || {};
     const ASHES = ashData?.ASHES_OF_WAR || {};
+    const BIOMES = biomeData?.BIOMES || {};
+    const LOOT_TABLES = biomeData?.LOOT_TABLES || {};
 
-    // Helper pour formater les drops d'un monstre
+    // 1. On crée une carte : Quel Boss -> Quel Butin de Biome ?
+    const bossLootMap = {};
+    Object.entries(BIOMES).forEach(([biomeId, biome]) => {
+      if (biome.boss && LOOT_TABLES[biomeId]) {
+        bossLootMap[biome.boss] = LOOT_TABLES[biomeId];
+      }
+    });
+
+    // Helper pour formater les drops (Ennemis Rares OU Biomes)
     const formatDrops = (drops) => {
       if (!drops || !drops.length) return "Aucun";
       return drops
@@ -61,13 +71,20 @@ async function startSync() {
         .join(", ");
     };
 
-    // 1. GÉNÉRATION DU BESTIAIRE AVEC BUTINS
-    if (monsterData && MONSTERS) {
+    // 2. GÉNÉRATION DU BESTIAIRE CORRIGÉ
+    if (MONSTERS) {
       let monsterMd =
-        "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Butins Spécifiques |\n| :--- | :--- | :--- | :--- |\n";
-      Object.values(MONSTERS).forEach((m) => {
+        "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Butins (Drops) |\n| :--- | :--- | :--- | :--- |\n";
+
+      Object.entries(MONSTERS).forEach(([id, m]) => {
         const icon = m.isBoss ? "💀 " : m.isRare ? "⭐ " : "";
-        const butins = formatDrops(m.drops);
+
+        // Logique de butin :
+        // - Si c'est un Boss : on prend le loot du biome associé
+        // - Sinon : on prend ses drops spécifiques (rares)
+        const dropsToFormat = m.isBoss ? bossLootMap[id] : m.drops;
+        const butins = formatDrops(dropsToFormat);
+
         monsterMd += `| ${icon}${m.name} | ${m.hp} | ${m.atk} | ${butins} |\n`;
       });
       fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), monsterMd);
