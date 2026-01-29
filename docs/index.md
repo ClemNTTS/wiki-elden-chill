@@ -28,7 +28,7 @@ Les altérations d'état sont au cœur de la stratégie. Voici comment elles fon
 
 | Statut           | Effet               | Scaling / Détails                                                                            |
 | :--------------- | :------------------ | :------------------------------------------------------------------------------------------- |
-| **Poison**       | Dégâts sur la durée | Joueur : 2% PV Max. Ennemi : 1% PV Max + 50% Intelligence du joueur.                         |
+| **Poison**       | Dégâts sur la durée | 1% PV Max de la cible + 50% Intelligence du joueur.                                          |
 | **Saignement**   | Explosion de dégâts | Chaque charge ajoute 10% de chance de proc. Inflige 20% de dégâts bonus par charge possédée. |
 | **Brûlure**      | Dégâts de feu       | Inflige 3% des PV Max ou 10% des PV manquants (le plus bas).                                 |
 | **Putréfaction** | Dégâts graves       | Inflige 5% des PV Max à chaque tour.                                                         |
