@@ -1,22 +1,10 @@
-// docs/.vitepress/config.js
 export default {
   title: "Elden Chill Wiki",
-  description: "Le guide ultime du Sans-Éclat",
+  description: "Grimoire de l'Entre-Terre",
   themeConfig: {
+    logo: "/favicon.ico", // Si tu en as une
     nav: [
       { text: "Accueil", link: "/" },
-      { text: "Objets", link: "/items" },
-      { text: "Bestiaire", link: "/bestiary" },
-      { text: "Mécaniques", link: "/mechanics" },
-    ],
-    sidebar: [
-      {
-        text: "Guide du Voyageur",
-        items: [
-          { text: "Accueil", link: "/" },
-          { text: "Mécaniques de Jeu", link: "/mechanics" },
-        ],
-      },
       {
         text: "Données",
         items: [
@@ -24,6 +12,12 @@ export default {
           { text: "Bestiaire", link: "/bestiary" },
         ],
       },
+      { text: "Mécaniques", link: "/mechanics" },
     ],
+    // Ajoute un footer pour le style "chill"
+    footer: {
+      message: "Que la Grâce guide tes pas.",
+      copyright: "© 2026 Elden Chill",
+    },
   },
 };
