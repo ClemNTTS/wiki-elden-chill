@@ -13,7 +13,7 @@ export default {
         text: "Données",
         items: [
           { text: "Équipement", link: "/items" },
-          { text: "Bestiaire", link: "/bestiary" },
+          { text: "Bestiaire", link: "/bestiaire" },
         ],
       },
       { text: "Mécaniques", link: "/mechanics" },
