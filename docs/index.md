@@ -17,7 +17,7 @@ Le monde de Elden Chill suit des règles strictes mais justes pour assurer une p
 Les Cendres de Guerre sont des capacités puissantes qui peuvent renverser le cours d'un combat.
 
 - **Obtention :** Elles sont obtenues exclusivement comme **butins uniques** sur certains monstres rares (environ 5% de chance de drop).
-- **Utilisation :** Elles possèdent un nombre d'utilisations limité par expédition, qui se réinitialise après avoir vaincu un Boss ou touché un Site de Grâce.
+- **Utilisation :** Elles possèdent un nombre d'utilisations limité par expédition, qui se réinitialise après avoir vaincu un Boss.
 - **Activation :** Une cendre doit être "préparée" avant d'être utilisée au tour suivant.
 
 ---
