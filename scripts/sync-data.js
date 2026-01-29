@@ -8,24 +8,20 @@ const USER = "ClemNTTS";
 const REPO = "elden-chill";
 const BRANCH = "main";
 const BASE_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/`;
-
-// Dossiers de destination
 const DOCS_PATH = "./docs";
 const cleanContent = (text) => {
   return text
     .replace(/import\s+[\s\S]*?;/g, "") // Supprime les imports
-    .replace(/export\s+/g, ""); // Supprime juste le mot "export" pour garder "const ITEM_TYPES"
+    .replace(/export\s+/g, ""); // Garde la déclaration const/let locale
 };
 
 async function getRemoteData(fileName) {
   const response = await fetch(`${BASE_URL}${fileName}`);
-  if (!response.ok)
-    throw new Error(`Erreur HTTP: ${response.status} sur ${fileName}`);
+  if (!response.ok) return null;
 
   const text = await response.text();
   const cleaned = cleanContent(text);
 
-  // On crée une fonction qui retourne les variables dont on a besoin
   const code = `
     ${cleaned}
     return { 
@@ -37,35 +33,41 @@ async function getRemoteData(fileName) {
   try {
     return new Function(code)();
   } catch (e) {
-    console.error(`Erreur dans ${fileName}:`, e.message);
-    return {};
+    return null;
   }
 }
 
 async function startSync() {
   console.log("⚔️ Début de la synchronisation...");
   try {
-    const data = {};
-    Object.assign(data, await getRemoteData("monster.js"));
-    Object.assign(data, await getRemoteData("item.js"));
+    const monsterData = await getRemoteData("monster.js");
+    const itemData = await getRemoteData("item.js");
 
-    if (data.MONSTERS) {
+    // 1. GÉNÉRATION DU BESTIAIRE
+    if (monsterData && monsterData.MONSTERS) {
       let monsterMd =
         "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Runes |\n| :--- | :--- | :--- | :--- |\n";
-      Object.values(data.MONSTERS).forEach((m) => {
-        monsterMd += `| ${m.name} | ${m.hp} | ${m.atk} | ${m.runes} |\n`;
+      Object.values(monsterData.MONSTERS).forEach((m) => {
+        const icon = m.isBoss ? "💀 " : m.isRare ? "⭐ " : "";
+        monsterMd += `| ${icon}${m.name} | ${m.hp} | ${m.atk} | ${m.runes} |\n`;
       });
-      fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), monsterMd);
+      // On le nomme bestiaire.md pour correspondre à ton menu
+      fs.writeFileSync(path.join(DOCS_PATH, "bestiaire.md"), monsterMd);
+      console.log("✅ bestiaire.md généré.");
     }
 
-    if (data.ITEMS) {
+    // 2. GÉNÉRATION DES ITEMS
+    if (itemData && itemData.ITEMS) {
       let itemMd = "# ⚔️ Équipement\n\n";
-      Object.values(data.ITEMS).forEach((item) => {
+      Object.values(itemData.ITEMS).forEach((item) => {
         itemMd += `### ${item.name}\n- **Type :** ${item.type}\n- **Effet :** ${item.description.replace(/<[^>]*>/g, "")}\n\n`;
       });
+      // On le nomme equipement.md ou items.md selon ton lien
       fs.writeFileSync(path.join(DOCS_PATH, "items.md"), itemMd);
+      console.log("✅ items.md généré.");
     }
-    console.log("✅ Wiki synchronisé !");
+
+    console.log("🚀 Wiki synchronisé avec succès !");
   } catch (error) {
     console.error("❌ Erreur :", error.message);
     process.exit(1);
