@@ -11,16 +11,10 @@ const BASE_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/`;
 
 // Dossiers de destination
 const DOCS_PATH = "./docs";
-
-/**
- * Transformation pour capturer les variables
- */
 const cleanContent = (text) => {
   return text
     .replace(/import\s+[\s\S]*?;/g, "") // Supprime les imports
-    .replace(/export\s+const\s+/g, "this.") // "export const MONSTERS" -> "this.MONSTERS"
-    .replace(/export\s+let\s+/g, "this.")
-    .replace(/export\s+/g, "this.");
+    .replace(/export\s+/g, ""); // Supprime juste le mot "export" pour garder "const ITEM_TYPES"
 };
 
 async function getRemoteData(fileName) {
@@ -31,46 +25,50 @@ async function getRemoteData(fileName) {
   const text = await response.text();
   const cleaned = cleanContent(text);
 
-  const sandbox = {};
-  // On exécute le code en liant 'this' à notre sandbox
-  new Function(cleaned + "\nreturn this;").call(sandbox);
-  return sandbox;
-}
+  // On crée une fonction qui retourne les variables dont on a besoin
+  const code = `
+    ${cleaned}
+    return { 
+      MONSTERS: typeof MONSTERS !== 'undefined' ? MONSTERS : null, 
+      ITEMS: typeof ITEMS !== 'undefined' ? ITEMS : null 
+    };
+  `;
 
-async function startSync() {
-  console.log("⚔️ Début de la synchronisation Elden Chill...");
   try {
-    // 1. MONSTRES
-    const monsterData = await getRemoteData("monster.js");
-    const MONSTERS = monsterData.MONSTERS;
-
-    if (!MONSTERS)
-      throw new Error("Variable MONSTERS non trouvée dans monster.js");
-
-    let monsterMd =
-      "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Runes |\n| :--- | :--- | :--- | :--- |\n";
-    Object.values(MONSTERS).forEach((m) => {
-      monsterMd += `| ${m.name} | ${m.hp} | ${m.atk} | ${m.runes} |\n`;
-    });
-    fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), monsterMd);
-
-    // 2. ITEMS
-    const itemData = await getRemoteData("item.js");
-    const ITEMS = itemData.ITEMS;
-
-    if (!ITEMS) throw new Error("Variable ITEMS non trouvée dans item.js");
-
-    let itemMd = "# ⚔️ Équipement\n\n";
-    Object.values(ITEMS).forEach((item) => {
-      itemMd += `### ${item.name}\n- **Type :** ${item.type}\n- **Effet :** ${item.description.replace(/<[^>]*>/g, "")}\n\n`;
-    });
-    fs.writeFileSync(path.join(DOCS_PATH, "items.md"), itemMd);
-
-    console.log("✅ Wiki synchronisé avec succès !");
-  } catch (error) {
-    console.error("❌ Erreur lors de la synchro :", error.message);
-    process.exit(1);
+    return new Function(code)();
+  } catch (e) {
+    console.error(`Erreur dans ${fileName}:`, e.message);
+    return {};
   }
 }
 
+async function startSync() {
+  console.log("⚔️ Début de la synchronisation...");
+  try {
+    const data = {};
+    Object.assign(data, await getRemoteData("monster.js"));
+    Object.assign(data, await getRemoteData("item.js"));
+
+    if (data.MONSTERS) {
+      let monsterMd =
+        "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Runes |\n| :--- | :--- | :--- | :--- |\n";
+      Object.values(data.MONSTERS).forEach((m) => {
+        monsterMd += `| ${m.name} | ${m.hp} | ${m.atk} | ${m.runes} |\n`;
+      });
+      fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), monsterMd);
+    }
+
+    if (data.ITEMS) {
+      let itemMd = "# ⚔️ Équipement\n\n";
+      Object.values(data.ITEMS).forEach((item) => {
+        itemMd += `### ${item.name}\n- **Type :** ${item.type}\n- **Effet :** ${item.description.replace(/<[^>]*>/g, "")}\n\n`;
+      });
+      fs.writeFileSync(path.join(DOCS_PATH, "items.md"), itemMd);
+    }
+    console.log("✅ Wiki synchronisé !");
+  } catch (error) {
+    console.error("❌ Erreur :", error.message);
+    process.exit(1);
+  }
+}
 startSync();
