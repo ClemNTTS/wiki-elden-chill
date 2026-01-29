@@ -24,6 +24,8 @@ Les Cendres de Guerre sont des capacités puissantes qui peuvent renverser le co
 
 ## 🧪 Effets de Statut
 
+A part le saignement, l'application d'un status fonctionne de la sorte : Entre l'effet de status actuel de la cible (ex : 5 de poison) et la valeur que l'on souhaite appliquer (ex : 2 poison), c'est la valeur la plus qui est appliquée (ici on garderait 5 de poison). Seul le saignement s'additionne.
+
 Les altérations d'état sont au cœur de la stratégie. Voici comment elles fonctionnent réellement :
 
 | Statut           | Effet               | Scaling / Détails                                                                            |
@@ -43,9 +45,11 @@ Pour les adeptes de l'optimisation, voici les équations qui régissent votre su
 
 ### Calcul des Points de Vie (PV)
 
-La santé de votre héros ne progresse pas de manière linéaire. Elle suit une courbe de rendement décroissant pour éviter que vous ne deveniez immortel trop rapidement :
+La santé de votre héros progresse de la sorte :
 
-$$HP = 300 + 1650 \times (1 - e^{-0.035 \times Vigueur}) + 0.18 \times Vigueur^2$$
+- Vigueur <= 40 => 300 + Vigueur \* 50
+- Vigueur <= 60 => 300 + 2200 + (Vigueur - 40) \* 35
+- Vigueur > 60 => 300 + 3000 + (Vigueur - 60) \* 25
 
 ### Coût des Améliorations
 
