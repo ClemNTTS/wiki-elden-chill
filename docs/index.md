@@ -43,6 +43,11 @@ Les altérations d'état sont au cœur de la stratégie. Voici comment elles fon
 
 Pour les adeptes de l'optimisation, voici les équations qui régissent votre survie.
 
+### Esquive et armure
+
+Vous possédez 100 d'armure de base. Elle augmente avec la déxtérité. Tout comme les chances d'esquive.
+Améliore votre agilité au combat. 4 points = 1% d'Esquive (Maximum 50%). Et 4 points = +1.5 d'Armure.
+
 ### Calcul des Points de Vie (PV)
 
 La santé de votre héros progresse de la sorte :
