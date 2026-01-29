@@ -5,7 +5,7 @@ import fetch from "node-fetch";
 
 // Configuration : Remplace par tes infos
 const USER = "ClemNTTS";
-const REPO = "=elden-chill";
+const REPO = "elden-chill";
 const BRANCH = "main";
 const BASE_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/`;
 
