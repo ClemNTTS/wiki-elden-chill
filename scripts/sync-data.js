@@ -4,8 +4,8 @@ import path from "path";
 import fetch from "node-fetch";
 
 // Configuration : Remplace par tes infos
-const USER = "TON_USER";
-const REPO = "TON_REPO";
+const USER = "ClemNTTS";
+const REPO = "wiki-elden-chill";
 const BRANCH = "main";
 const BASE_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/`;
 
