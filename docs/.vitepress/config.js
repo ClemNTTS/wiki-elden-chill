@@ -1,4 +1,5 @@
 export default {
+  base: "/wiki-elden-chill/",
   title: "Elden Chill Wiki",
   description: "Grimoire de l'Entre-Terre",
   themeConfig: {
