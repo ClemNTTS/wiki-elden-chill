@@ -30,7 +30,7 @@ Les altérations d'état sont au cœur de la stratégie. Voici comment elles fon
 
 | Statut           | Effet               | Scaling / Détails                                                                                                        |
 | ---------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Poison**       | Dégâts sur la durée | 1% PV Max de la cible + 50% Intelligence du joueur.                                                                      |
+| **Poison**       | Dégâts sur la durée | 1% PV Max de la cible + 50% Intelligence du joueur. (Les monstres font des dégats de poisons équivalent à votre level)   |
 | **Saignement**   | Explosion de dégâts | Chaque charge ajoute 10% de chance de proc. Inflige 20% de dégâts bonus par charge possédée.                             |
 | **Gelure**       | Fragilisation       | À 10 charges : inflige 10% PV Max (+30) et réduit l'armure de 20 points pour tout le combat. (Dégâts -30% sur les Boss). |
 | **Brûlure**      | Dégâts de feu       | Inflige 3% des PV Max ou 10% des PV manquants (le plus bas).                                                             |
@@ -47,7 +47,7 @@ Pour les adeptes de l'optimisation, voici les équations qui régissent votre su
 ### Esquive et armure
 
 Vous possédez 100 d'armure de base. Elle augmente avec la déxtérité. Tout comme les chances d'esquive.
-Améliore votre agilité au combat. 4 points = 1% d'Esquive (Maximum 50%). Et 4 points = +1.5 d'Armure.
+Améliore votre agilité au combat. 4 points = 1% d'Esquive (Maximum 50%). Et 4 points = +0.5 d'Armure.
 
 ### Calcul des Points de Vie (PV)
 

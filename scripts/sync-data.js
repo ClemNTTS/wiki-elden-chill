@@ -133,6 +133,28 @@ async function startSync() {
       fs.writeFileSync(path.join(DOCS_PATH, "items.md"), itemMd);
     }
 
+    // 4. GÉNÉRATION DES CENDRES DE GUERRE
+    if (ashData && ASHES) {
+      let ashMd = "# ✨ Cendres de Guerre\n\n";
+      ashMd +=
+        "Les Cendres de Guerre sont des capacités spéciales que vous pouvez équiper pour obtenir des avantages tactiques en combat.\n\n";
+
+      Object.values(ASHES).forEach((ash) => {
+        // Gestion des utilisations max (certaines sont des getters ou fixes)
+        const maxUsesDisplay =
+          typeof ash.maxUses === "number"
+            ? ash.maxUses
+            : "Variable (voir description)";
+
+        ashMd += `### ${ash.name}\n`;
+        ashMd += `- **Description :** ${ash.description}\n`;
+        ashMd += `- **Utilisations max :** ${maxUsesDisplay}\n\n`;
+      });
+
+      fs.writeFileSync(path.join(DOCS_PATH, "ashes.md"), ashMd);
+      console.log("✅ ashes.md généré.");
+    }
+
     console.log("🚀 Wiki mis à jour avec les loots rares !");
   } catch (error) {
     console.error("❌ Erreur :", error.message);
