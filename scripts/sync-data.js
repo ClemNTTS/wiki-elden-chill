@@ -10,9 +10,14 @@ const BRANCH = "main";
 const BASE_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/`;
 const DOCS_PATH = "./docs";
 const cleanContent = (text) => {
-  return text
-    .replace(/import\s+[\s\S]*?;/g, "") // Supprime les imports
-    .replace(/export\s+/g, ""); // Supprime le mot export pour garder les const locales
+  return (
+    text
+      .replace(/import\s+[\s\S]*?;/g, "")
+      // ON SUPPRIME "export const ", "export let " etc. pour ne garder que l'assignation simple
+      .replace(/export\s+(const|let|var)\s+/g, "")
+      // On gère aussi le cas "export function"
+      .replace(/export\s+function\s+/g, "function ")
+  );
 };
 
 async function getRemoteData(fileName) {
@@ -22,24 +27,29 @@ async function getRemoteData(fileName) {
   const text = await response.text();
   const cleaned = cleanContent(text);
 
-  // On utilise 'var' ici au lieu de 'const' pour autoriser la redéclaration
-  // si le fichier (comme item.js) définit lui-même ces variables
+  // On utilise 'let' pour toutes nos variables de secours (mocks)
+  // Elles seront écrasées par les valeurs de tes fichiers
   const code = `
-    var gameState = { world: { unlockedBiomes: [], currentBiome: "" }, stats: { level: 1, intelligence: 10 }, equipped: {} };
-    var runtimeState = { playerCurrentHp: 100, playerArmorDebuff: 0 };
-    var getHealth = () => 100;
-    var getEffectiveStats = () => ({ strength: 10, vigor: 10, intelligence: 10, dexterity: 10, critChance: 0, critDamage: 1.5 });
-    var ActionLog = () => {};
-    var ITEM_TYPES = { WEAPON: "Arme", ARMOR: "Armure", ACCESSORY: "Accessoire" };
+    let gameState = { world: { unlockedBiomes: [], currentBiome: "" }, stats: { level: 1, intelligence: 10 }, equipped: {} };
+    let runtimeState = { playerCurrentHp: 100, playerArmorDebuff: 0 };
+    let getHealth = () => 100;
+    let getEffectiveStats = () => ({ strength: 10, vigor: 10, intelligence: 10, dexterity: 10, critChance: 0, critDamage: 1.5 });
+    let ActionLog = () => {};
+    let ITEM_TYPES = { WEAPON: "Arme", ARMOR: "Armure", ACCESSORY: "Accessoire" };
+    let ITEMS = null;
+    let MONSTERS = null;
+    let BIOMES = null;
+    let LOOT_TABLES = null;
+    let ASHES_OF_WAR = null;
 
     ${cleaned}
 
     return { 
-      MONSTERS: typeof MONSTERS !== 'undefined' ? MONSTERS : null, 
-      ITEMS: typeof ITEMS !== 'undefined' ? ITEMS : null,
-      BIOMES: typeof BIOMES !== 'undefined' ? BIOMES : null,
-      LOOT_TABLES: typeof LOOT_TABLES !== 'undefined' ? LOOT_TABLES : null,
-      ASHES_OF_WAR: typeof ASHES_OF_WAR !== 'undefined' ? ASHES_OF_WAR : null
+      MONSTERS, 
+      ITEMS, 
+      BIOMES, 
+      LOOT_TABLES, 
+      ASHES_OF_WAR
     };
   `;
 
@@ -65,7 +75,7 @@ async function startSync() {
     const BIOMES = biomeData?.BIOMES || {};
     const LOOT_TABLES = biomeData?.LOOT_TABLES || {};
 
-    // 1. GÉNÉRATION BESTIARY (Fix Boss Loot)
+    // 1. GÉNÉRATION BESTIARY
     const bossLootMap = {};
     Object.entries(BIOMES).forEach(([id, b]) => {
       if (b.boss) bossLootMap[b.boss] = LOOT_TABLES[id];
