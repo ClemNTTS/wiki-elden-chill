@@ -52,7 +52,7 @@ Améliore votre agilité au combat. 4 points = 1% d'Esquive (Maximum 50%). Et 4 
 
 La santé de votre héros progresse de la sorte :
 
-- Vigueur <= 40 => 300 + Vigueur \* 50
+- Vigueur <= 40 => 300 + Vigueur \* 45
 - Vigueur <= 60 => 300 + 2200 + (Vigueur - 40) \* 35
 - Vigueur > 60 => 300 + 3000 + (Vigueur - 60) \* 25
 
@@ -60,8 +60,8 @@ La santé de votre héros progresse de la sorte :
 
 Le coût pour augmenter une statistique augmente de manière drastique avec votre niveau global :
 
-$$Coût = \lfloor Base \times ((x + 0.1) \times (Niveau + 81)^2 + 1) \rfloor$$
-_(où $x$ augmente après le niveau 11)_
+$ Coût = \lfloor Base \times ((x + 0.1) \times (Niveau + 81)^2 + 1) \rfloor$$
+_(où $x$ augmente après le niveau 11)\_
 
 ---
 
