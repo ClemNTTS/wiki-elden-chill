@@ -24,18 +24,19 @@ Les Cendres de Guerre sont des capacités puissantes qui peuvent renverser le co
 
 ## 🧪 Effets de Statut
 
-A part le saignement, l'application d'un status fonctionne de la sorte : Entre l'effet de status actuel de la cible (ex : 5 de poison) et la valeur que l'on souhaite appliquer (ex : 2 poison), c'est la valeur la plus qui est appliquée (ici on garderait 5 de poison). Seul le saignement s'additionne.
+À l'exception du **Saignement** et de la **Gelure**, l'application d'un statut fonctionne par comparaison : entre l'effet déjà présent sur la cible (ex : 5 tours de poison) et la nouvelle valeur (ex : 2 tours), seule la valeur la plus élevée est conservée (ici, 5 tours). Le saignement et la gelure sont les seuls effets dont les charges s'additionnent à chaque coup porté.
 
 Les altérations d'état sont au cœur de la stratégie. Voici comment elles fonctionnent réellement :
 
-| Statut           | Effet               | Scaling / Détails                                                                            |
-| :--------------- | :------------------ | :------------------------------------------------------------------------------------------- |
-| **Poison**       | Dégâts sur la durée | 1% PV Max de la cible + 50% Intelligence du joueur.                                          |
-| **Saignement**   | Explosion de dégâts | Chaque charge ajoute 10% de chance de proc. Inflige 20% de dégâts bonus par charge possédée. |
-| **Brûlure**      | Dégâts de feu       | Inflige 3% des PV Max ou 10% des PV manquants (le plus bas).                                 |
-| **Putréfaction** | Dégâts graves       | Inflige 5% des PV Max à chaque tour.                                                         |
-| **Étourdi**      | Perte de tour       | L'entité ne peut pas agir durant son prochain tour.                                          |
-| **Épines**       | Renvoi de dégâts    | Renvoie 15% des dégâts subis + la Vigueur (de base) du joueur / 2.                           |
+| Statut           | Effet               | Scaling / Détails                                                                                                        |
+| ---------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Poison**       | Dégâts sur la durée | 1% PV Max de la cible + 50% Intelligence du joueur.                                                                      |
+| **Saignement**   | Explosion de dégâts | Chaque charge ajoute 10% de chance de proc. Inflige 20% de dégâts bonus par charge possédée.                             |
+| **Gelure**       | Fragilisation       | À 10 charges : inflige 10% PV Max (+30) et réduit l'armure de 20 points pour tout le combat. (Dégâts -30% sur les Boss). |
+| **Brûlure**      | Dégâts de feu       | Inflige 3% des PV Max ou 10% des PV manquants (le plus bas).                                                             |
+| **Putréfaction** | Dégâts graves       | Inflige 5% des PV Max à chaque tour.                                                                                     |
+| **Étourdi**      | Perte de tour       | L'entité ne peut pas agir durant son prochain tour.                                                                      |
+| **Épines**       | Renvoi de dégâts    | Renvoie 15% des dégâts subis + la Vigueur (de base) du joueur / 2.                                                       |
 
 ---
 
