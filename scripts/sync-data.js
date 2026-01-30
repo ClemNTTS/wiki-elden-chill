@@ -12,7 +12,7 @@ const DOCS_PATH = "./docs";
 const cleanContent = (text) => {
   return text
     .replace(/import\s+[\s\S]*?;/g, "") // Supprime les imports
-    .replace(/export\s+/g, ""); // Transforme "export const" en "const" local
+    .replace(/export\s+/g, ""); // Supprime le mot export pour garder les const locales
 };
 
 async function getRemoteData(fileName) {
@@ -22,15 +22,15 @@ async function getRemoteData(fileName) {
   const text = await response.text();
   const cleaned = cleanContent(text);
 
-  // On crée un environnement fictif pour que le code du jeu ne plante pas
-  // car il s'attend à trouver gameState, getHealth, etc.
+  // On utilise 'var' ici au lieu de 'const' pour autoriser la redéclaration
+  // si le fichier (comme item.js) définit lui-même ces variables
   const code = `
-    const gameState = { world: { unlockedBiomes: [], currentBiome: "" }, stats: { level: 1, intelligence: 10 }, equipped: {} };
-    const runtimeState = { playerCurrentHp: 100, playerArmorDebuff: 0 };
-    const getHealth = () => 100;
-    const getEffectiveStats = () => ({ strength: 10, vigor: 10, intelligence: 10 });
-    const ActionLog = () => {};
-    const ITEM_TYPES = { WEAPON: "Arme", ARMOR: "Armure", ACCESSORY: "Accessoire" };
+    var gameState = { world: { unlockedBiomes: [], currentBiome: "" }, stats: { level: 1, intelligence: 10 }, equipped: {} };
+    var runtimeState = { playerCurrentHp: 100, playerArmorDebuff: 0 };
+    var getHealth = () => 100;
+    var getEffectiveStats = () => ({ strength: 10, vigor: 10, intelligence: 10, dexterity: 10, critChance: 0, critDamage: 1.5 });
+    var ActionLog = () => {};
+    var ITEM_TYPES = { WEAPON: "Arme", ARMOR: "Armure", ACCESSORY: "Accessoire" };
 
     ${cleaned}
 
@@ -46,13 +46,13 @@ async function getRemoteData(fileName) {
   try {
     return new Function(code)();
   } catch (e) {
-    console.error(`❌ Erreur d'exécution dans ${fileName}:`, e.message);
+    console.error(`❌ Erreur dans ${fileName}:`, e.message);
     return null;
   }
 }
 
 async function startSync() {
-  console.log("⚔️ Début de la synchronisation complète...");
+  console.log("⚔️ Synchronisation du Grimoire...");
   try {
     const monsterData = await getRemoteData("monster.js");
     const itemData = await getRemoteData("item.js");
@@ -61,11 +61,11 @@ async function startSync() {
 
     const MONSTERS = monsterData?.MONSTERS || {};
     const ITEMS = itemData?.ITEMS || {};
+    const ASHES = ashData?.ASHES_OF_WAR || {};
     const BIOMES = biomeData?.BIOMES || {};
     const LOOT_TABLES = biomeData?.LOOT_TABLES || {};
-    const ASHES = ashData?.ASHES_OF_WAR || {};
 
-    // 1. CARTE DES BOSS
+    // 1. GÉNÉRATION BESTIARY (Fix Boss Loot)
     const bossLootMap = {};
     Object.entries(BIOMES).forEach(([id, b]) => {
       if (b.boss) bossLootMap[b.boss] = LOOT_TABLES[id];
@@ -83,7 +83,6 @@ async function startSync() {
         .join(", ");
     };
 
-    // 2. GÉNÉRATION BESTIARY
     if (MONSTERS) {
       let md =
         "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Butins (Drops) |\n| :--- | :--- | :--- | :--- |\n";
@@ -94,21 +93,7 @@ async function startSync() {
       fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), md);
     }
 
-    // 3. GÉNÉRATION BIOMES
-    if (BIOMES) {
-      let md = "# 🗺️ Exploration des Biomes\n\n";
-      Object.entries(BIOMES).forEach(([id, b]) => {
-        if (b.name.includes("WIP")) return;
-        md += `## ${b.name}\n- **Longueur :** ${b.length} pas | **Boss :** ${MONSTERS[b.boss]?.name || b.boss}\n\n### 🎁 Butins\n`;
-        (LOOT_TABLES[id] || []).forEach((l) => {
-          md += `- ${ITEMS[l.id]?.name || l.id} (${(l.chance * 100).toFixed(0)}%)\n`;
-        });
-        md += `\n---\n\n`;
-      });
-      fs.writeFileSync(path.join(DOCS_PATH, "biomes.md"), md);
-    }
-
-    // 4. GÉNÉRATION ITEMS
+    // 2. GÉNÉRATION ITEMS
     if (ITEMS) {
       let md = "# ⚔️ Équipement\n\n";
       Object.values(ITEMS).forEach((i) => {
@@ -117,18 +102,31 @@ async function startSync() {
       fs.writeFileSync(path.join(DOCS_PATH, "items.md"), md);
     }
 
-    // 5. GÉNÉRATION ASHES (Nouvelle page !)
+    // 3. GÉNÉRATION ASHES
     if (ASHES) {
-      let md =
-        "# ✨ Cendres de Guerre\n\nCapacités spéciales obtenues sur les ennemis rares.\n\n";
+      let md = "# ✨ Cendres de Guerre\n\n";
       Object.values(ASHES).forEach((a) => {
         const uses = typeof a.maxUses === "number" ? a.maxUses : "Spécial";
-        md += `### ${a.name}\n- **Description :** ${a.description}\n- **Utilisations :** ${uses}\n\n`;
+        md += `### ${a.name}\n- **Description :** ${a.description}\n- **Utilisations Max :** ${uses}\n\n`;
       });
       fs.writeFileSync(path.join(DOCS_PATH, "ashes.md"), md);
     }
 
-    console.log("🚀 Tout est synchronisé !");
+    // 4. GÉNÉRATION BIOMES
+    if (BIOMES) {
+      let md = "# 🗺️ Exploration des Biomes\n\n";
+      Object.entries(BIOMES).forEach(([id, b]) => {
+        if (b.name.includes("WIP")) return;
+        md += `## ${b.name}\n- **Boss :** ${MONSTERS[b.boss]?.name || b.boss}\n\n### 🎁 Butins de zone\n`;
+        (LOOT_TABLES[id] || []).forEach((l) => {
+          md += `- ${ITEMS[l.id]?.name || l.id} (${(l.chance * 100).toFixed(0)}%)\n`;
+        });
+        md += `\n---\n\n`;
+      });
+      fs.writeFileSync(path.join(DOCS_PATH, "biomes.md"), md);
+    }
+
+    console.log("✅ Toutes les pages ont été générées avec succès !");
   } catch (e) {
     console.error(e);
     process.exit(1);
