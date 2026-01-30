@@ -10,16 +10,30 @@ const BRANCH = "main";
 const BASE_URL = `https://raw.githubusercontent.com/${USER}/${REPO}/${BRANCH}/`;
 const DOCS_PATH = "./docs";
 const cleanContent = (text) => {
-  return text.replace(/import\s+[\s\S]*?;/g, "").replace(/export\s+/g, "");
+  return text
+    .replace(/import\s+[\s\S]*?;/g, "") // Supprime les imports
+    .replace(/export\s+/g, ""); // Transforme "export const" en "const" local
 };
 
 async function getRemoteData(fileName) {
   const response = await fetch(`${BASE_URL}${fileName}`);
   if (!response.ok) return null;
+
   const text = await response.text();
   const cleaned = cleanContent(text);
+
+  // On crée un environnement fictif pour que le code du jeu ne plante pas
+  // car il s'attend à trouver gameState, getHealth, etc.
   const code = `
+    const gameState = { world: { unlockedBiomes: [], currentBiome: "" }, stats: { level: 1, intelligence: 10 }, equipped: {} };
+    const runtimeState = { playerCurrentHp: 100, playerArmorDebuff: 0 };
+    const getHealth = () => 100;
+    const getEffectiveStats = () => ({ strength: 10, vigor: 10, intelligence: 10 });
+    const ActionLog = () => {};
+    const ITEM_TYPES = { WEAPON: "Arme", ARMOR: "Armure", ACCESSORY: "Accessoire" };
+
     ${cleaned}
+
     return { 
       MONSTERS: typeof MONSTERS !== 'undefined' ? MONSTERS : null, 
       ITEMS: typeof ITEMS !== 'undefined' ? ITEMS : null,
@@ -28,15 +42,17 @@ async function getRemoteData(fileName) {
       ASHES_OF_WAR: typeof ASHES_OF_WAR !== 'undefined' ? ASHES_OF_WAR : null
     };
   `;
+
   try {
     return new Function(code)();
   } catch (e) {
+    console.error(`❌ Erreur d'exécution dans ${fileName}:`, e.message);
     return null;
   }
 }
 
 async function startSync() {
-  console.log("⚔️ Correction de la table des butins des Boss...");
+  console.log("⚔️ Début de la synchronisation complète...");
   try {
     const monsterData = await getRemoteData("monster.js");
     const itemData = await getRemoteData("item.js");
@@ -45,19 +61,16 @@ async function startSync() {
 
     const MONSTERS = monsterData?.MONSTERS || {};
     const ITEMS = itemData?.ITEMS || {};
-    const ASHES = ashData?.ASHES_OF_WAR || {};
     const BIOMES = biomeData?.BIOMES || {};
     const LOOT_TABLES = biomeData?.LOOT_TABLES || {};
+    const ASHES = ashData?.ASHES_OF_WAR || {};
 
-    // 1. On crée une carte : Quel Boss -> Quel Butin de Biome ?
+    // 1. CARTE DES BOSS
     const bossLootMap = {};
-    Object.entries(BIOMES).forEach(([biomeId, biome]) => {
-      if (biome.boss && LOOT_TABLES[biomeId]) {
-        bossLootMap[biome.boss] = LOOT_TABLES[biomeId];
-      }
+    Object.entries(BIOMES).forEach(([id, b]) => {
+      if (b.boss) bossLootMap[b.boss] = LOOT_TABLES[id];
     });
 
-    // Helper pour formater les drops (Ennemis Rares OU Biomes)
     const formatDrops = (drops) => {
       if (!drops || !drops.length) return "Aucun";
       return drops
@@ -65,99 +78,59 @@ async function startSync() {
           const name = d.id
             ? ITEMS[d.id]?.name || d.id
             : ASHES[d.ashId]?.name || d.ashId;
-          const chance = (d.chance * 100).toFixed(0) + "%";
-          return `${name} (${chance})`;
+          return `${name} (${(d.chance * 100).toFixed(0)}%)`;
         })
         .join(", ");
     };
 
-    // 2. GÉNÉRATION DU BESTIAIRE CORRIGÉ
+    // 2. GÉNÉRATION BESTIARY
     if (MONSTERS) {
-      let monsterMd =
+      let md =
         "# 🐲 Bestiaire\n\n| Nom | PV | ATK | Butins (Drops) |\n| :--- | :--- | :--- | :--- |\n";
-
       Object.entries(MONSTERS).forEach(([id, m]) => {
         const icon = m.isBoss ? "💀 " : m.isRare ? "⭐ " : "";
-
-        // Logique de butin :
-        // - Si c'est un Boss : on prend le loot du biome associé
-        // - Sinon : on prend ses drops spécifiques (rares)
-        const dropsToFormat = m.isBoss ? bossLootMap[id] : m.drops;
-        const butins = formatDrops(dropsToFormat);
-
-        monsterMd += `| ${icon}${m.name} | ${m.hp} | ${m.atk} | ${butins} |\n`;
+        md += `| ${icon}${m.name} | ${m.hp} | ${m.atk} | ${formatDrops(m.isBoss ? bossLootMap[id] : m.drops)} |\n`;
       });
-      fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), monsterMd);
+      fs.writeFileSync(path.join(DOCS_PATH, "bestiary.md"), md);
     }
 
-    // 2. GÉNÉRATION DES BIOMES AVEC DÉTAILS RARES
-    if (biomeData && biomeData.BIOMES) {
-      let biomeMd = "# 🗺️ Exploration des Biomes\n\n";
-      Object.entries(biomeData.BIOMES).forEach(([id, biome]) => {
-        if (!biome.name || biome.name.includes("WIP")) return;
-
-        biomeMd += `## ${biome.name}\n`;
-        biomeMd += `- **Longueur :** ${biome.length} étapes | **Boss :** 💀 ${MONSTERS[biome.boss]?.name || biome.boss}\n\n`;
-
-        // Monstres Rares et leurs Loots
-        if (biome.rareMonsters && biome.rareMonsters.length > 0) {
-          biomeMd += `### ✨ Rencontres Rares (15%)\n`;
-          biome.rareMonsters.forEach((mId) => {
-            const m = MONSTERS[mId];
-            if (m) {
-              biomeMd += `* **${m.name}** : ${formatDrops(m.drops)}\n`;
-            }
-          });
-          biomeMd += `\n`;
-        }
-
-        // Table de loot du biome
-        const loot = biomeData.LOOT_TABLES[id];
-        if (loot) {
-          biomeMd += `### 🎁 Butins de zone (Table de Loot)\n| Objet | Chance |\n| :--- | :--- |\n`;
-          loot.forEach((l) => {
-            biomeMd += `| ${ITEMS[l.id]?.name || l.id} | ${(l.chance * 100).toFixed(0)}% |\n`;
-          });
-        }
-        biomeMd += `\n---\n\n`;
+    // 3. GÉNÉRATION BIOMES
+    if (BIOMES) {
+      let md = "# 🗺️ Exploration des Biomes\n\n";
+      Object.entries(BIOMES).forEach(([id, b]) => {
+        if (b.name.includes("WIP")) return;
+        md += `## ${b.name}\n- **Longueur :** ${b.length} pas | **Boss :** ${MONSTERS[b.boss]?.name || b.boss}\n\n### 🎁 Butins\n`;
+        (LOOT_TABLES[id] || []).forEach((l) => {
+          md += `- ${ITEMS[l.id]?.name || l.id} (${(l.chance * 100).toFixed(0)}%)\n`;
+        });
+        md += `\n---\n\n`;
       });
-      fs.writeFileSync(path.join(DOCS_PATH, "biomes.md"), biomeMd);
+      fs.writeFileSync(path.join(DOCS_PATH, "biomes.md"), md);
     }
 
-    // 3. GÉNÉRATION DES ITEMS (Inchangé)
-    if (itemData && ITEMS) {
-      let itemMd = "# ⚔️ Équipement\n\n";
-      Object.values(ITEMS).forEach((item) => {
-        itemMd += `### ${item.name}\n- **Type :** ${item.type}\n- **Effet :** ${item.description.replace(/<[^>]*>/g, "")}\n\n`;
+    // 4. GÉNÉRATION ITEMS
+    if (ITEMS) {
+      let md = "# ⚔️ Équipement\n\n";
+      Object.values(ITEMS).forEach((i) => {
+        md += `### ${i.name}\n- **Type :** ${i.type}\n- **Effet :** ${i.description.replace(/<[^>]*>/g, "")}\n\n`;
       });
-      fs.writeFileSync(path.join(DOCS_PATH, "items.md"), itemMd);
+      fs.writeFileSync(path.join(DOCS_PATH, "items.md"), md);
     }
 
-    // 4. GÉNÉRATION DES CENDRES DE GUERRE
-    if (ashData && ASHES) {
-      let ashMd = "# ✨ Cendres de Guerre\n\n";
-      ashMd +=
-        "Les Cendres de Guerre sont des capacités spéciales que vous pouvez équiper pour obtenir des avantages tactiques en combat.\n\n";
-
-      Object.values(ASHES).forEach((ash) => {
-        // Gestion des utilisations max (certaines sont des getters ou fixes)
-        const maxUsesDisplay =
-          typeof ash.maxUses === "number"
-            ? ash.maxUses
-            : "Variable (voir description)";
-
-        ashMd += `### ${ash.name}\n`;
-        ashMd += `- **Description :** ${ash.description}\n`;
-        ashMd += `- **Utilisations max :** ${maxUsesDisplay}\n\n`;
+    // 5. GÉNÉRATION ASHES (Nouvelle page !)
+    if (ASHES) {
+      let md =
+        "# ✨ Cendres de Guerre\n\nCapacités spéciales obtenues sur les ennemis rares.\n\n";
+      Object.values(ASHES).forEach((a) => {
+        const uses = typeof a.maxUses === "number" ? a.maxUses : "Spécial";
+        md += `### ${a.name}\n- **Description :** ${a.description}\n- **Utilisations :** ${uses}\n\n`;
       });
-
-      fs.writeFileSync(path.join(DOCS_PATH, "ashes.md"), ashMd);
-      console.log("✅ ashes.md généré.");
+      fs.writeFileSync(path.join(DOCS_PATH, "ashes.md"), md);
     }
 
-    console.log("🚀 Wiki mis à jour avec les loots rares !");
-  } catch (error) {
-    console.error("❌ Erreur :", error.message);
+    console.log("🚀 Tout est synchronisé !");
+  } catch (e) {
+    console.error(e);
     process.exit(1);
   }
 }
