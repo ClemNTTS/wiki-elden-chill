@@ -1,77 +1,87 @@
 # 🌑 Elden Chill Wiki
 
-Bienvenue dans le guide officiel de **Elden Chill**. Que tu sois un Sans-Éclat débutant ou un Seigneur d'Elden en devenir, ce grimoire contient toutes les vérités extraites directement du code de l'Entre-Terre.
+Bienvenue dans le guide officiel de **Elden Chill**. Ce grimoire contient les vérités extraites directement du code de l'Entre-Terre.
 
 ## 📜 Mécaniques de Base
 
-Le monde de Elden Chill suit des règles strictes mais justes pour assurer une progression "chill" mais stratégique.
+### 🧌 Rencontres et Monstres
 
-### 🧌 Rencontres et Monstres Rares
-
-- **Apparition standard :** Chaque biome possède une liste de monstres communs qui apparaissent durant ton exploration.
-- **Monstres Rares :** Il existe **15% de chance** qu'un monstre rare apparaisse à la place d'un monstre commun, à condition que la limite de spawns rares de la zone ne soit pas atteinte.
+- **Apparition standard :** Chaque biome possède une liste de monstres communs.
+- **Groupes d'ennemis :** Certains monstres chassent en meute ou sont accompagnés de serviteurs. Vous affronterez parfois plusieurs ennemis en même temps ! Les dégâts de zone (Splash) deviennent alors cruciaux.
+- **Monstres Rares :** Il existe **15% de chance** qu'un monstre rare apparaisse (si le compteur de rares de la zone le permet). Ils sont plus puissants mais offrent de meilleurs butins.
 - **Boss :** Un boss unique t'attend à la fin de chaque biome une fois la barre de progression remplie.
 
 ### ⚔️ Cendres de Guerre
 
-Les Cendres de Guerre sont des capacités puissantes qui peuvent renverser le cours d'un combat.
+Les Cendres de Guerre sont des capacités actives puissantes.
 
-- **Obtention :** Elles sont obtenues exclusivement comme **butins uniques** sur certains monstres rares (environ 5% de chance de drop).
-- **Utilisation :** Elles possèdent un nombre d'utilisations limité par expédition, qui se réinitialise après avoir vaincu un Boss.
-- **Activation :** Une cendre doit être "préparée" avant d'être utilisée au tour suivant.
+- **Obtention :** Elles sont obtenues comme **butins uniques** sur certains monstres rares. Les chances varient (souvent 2% à 3% pour les rares avancés, parfois plus pour les premiers).
+- **Utilisation :** Elles possèdent un nombre d'utilisations limité par expédition (rechargé au camp ou après un Boss).
+- **Activation :** Une cendre doit être "préparée" (clic sur le bouton) et sera déclenchée automatiquement au début de votre prochain tour d'attaque.
 
 ---
 
 ## 🧪 Effets de Statut
 
-À l'exception du **Saignement** et de la **Gelure**, l'application d'un statut fonctionne par comparaison : entre l'effet déjà présent sur la cible (ex : 5 tours de poison) et la nouvelle valeur (ex : 2 tours), seule la valeur la plus élevée est conservée (ici, 5 tours). Le saignement et la gelure sont les seuls effets dont les charges s'additionnent à chaque coup porté.
+Les altérations d'état dominent la méta. Voici leurs effets exacts (extraits du code source `status.js`) :
 
-Les altérations d'état sont au cœur de la stratégie. Voici comment elles fonctionnent réellement :
-
-| Statut           | Effet               | Scaling / Détails                                                                                                        |
+| Statut           | Effet               | Détails Techniques                                                                                                        |
 | ---------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Poison**       | Dégâts sur la durée | 1% PV Max de la cible + 50% Intelligence du joueur. (Les monstres font des dégats de poisons équivalent à votre level)   |
-| **Saignement**   | Explosion de dégâts | Chaque charge ajoute 10% de chance de proc. Inflige 20% de dégâts bonus par charge possédée.                             |
-| **Gelure**       | Fragilisation       | À 10 charges : inflige 10% PV Max (+30) et réduit l'armure de 20 points pour tout le combat. (Dégâts -30% sur les Boss). |
-| **Brûlure**      | Dégâts de feu       | Inflige 3% des PV Max ou 10% des PV manquants (le plus bas).                                                             |
-| **Putréfaction** | Dégâts graves       | Inflige 5% des PV Max à chaque tour.                                                                                     |
+| **Poison**       | Dégâts sur durée    | Joueur : Subit dégâts = `70% du Niveau` par tour. <br> Monstres : Subissent `1% PV Max + 50% Intelligence` par tour.   |
+| **Saignement**   | Explosion de dégâts | 10% de chance de proc par charge. Inflige `20% de dégâts bonus` par charge consommée.                             |
+| **Gelure**       | Fragilisation       | À 10 charges : Inflige `10% PV Max (+30)` (Boss: -30% dégâts) et réduit l'armure de 20 points (cumulable sur le joueur). |
+| **Brûlure**      | Dégâts de feu       | Joueur : Subit le plus bas entre `3% PV Max` ou `10% PV Manquants`. <br> Monstres : Subissent `5% PV Max`.                                                             |
+| **Putréfaction** | Dégâts graves       | Inflige `5% des PV Max` à chaque tour.                                                                                     |
 | **Étourdi**      | Perte de tour       | L'entité ne peut pas agir durant son prochain tour.                                                                      |
-| **Épines**       | Renvoi de dégâts    | Renvoie 15% des dégâts subis + la Vigueur (de base) du joueur / 2.                                                       |
+| **Épines**       | Renvoi de dégâts    | Renvoie `15% des dégâts subis`. <br> Joueur (bonus) : `+ Vigueur / 2`. <br> Monstres (bonus) : `+ 5 dégâts fixes`.                                                       |
+
+> **Note :** Sauf pour Saignement et Gelure, réappliquer un effet ne fait que rafraîchir sa durée si la nouvelle est supérieure.
 
 ---
 
 ## 🧬 Formules de Puissance
 
-Pour les adeptes de l'optimisation, voici les équations qui régissent votre survie.
+### Statistiques & Attributs
 
-### Esquive et armure
+*   **Force** : Augmente les dégâts physiques bruts.
+*   **Dextérité** :
+    *   4 points = **+0.5 Armure**.
+    *   4 points = **+1 Force** (Scaling secondaire).
+    *   400 points = **50% Esquive** (Cap maximum).
+*   **Intelligence** :
+    *   1 point = **+1% Runes gagnées**.
+    *   4 points = **+1 Force** (Scaling secondaire).
+    *   Augmente les dégâts de Poison infligés aux ennemis.
 
-Vous possédez 100 d'armure de base. Elle augmente avec la déxtérité. Tout comme les chances d'esquive.
-Améliore votre agilité au combat. 4 points = 1% d'Esquive (Maximum 50%). Et 4 points = +0.5 d'Armure.
+### Calcul des Points de Vie (HP)
 
-### Calcul des Points de Vie (PV)
+La vitalité ne progresse pas de manière linéaire. Il existe des paliers (soft caps) :
 
-La santé de votre héros progresse de la sorte :
+1.  **Vigueur <= 40** :
+    $$ HP = 300 + (Vigueur \times 45) $$ 
+2.  **Vigueur 41 à 60** :
+    $$ HP = 2500 + (Vigueur - 40) \times 35 $$ 
+    *(Note : Un saut important de PV se produit au passage 40->41)*
+3.  **Vigueur > 60** :
+    $$ HP = 3300 + (Vigueur - 60) \times 25 $$ 
 
-- Vigueur <= 40 => 300 + Vigueur \* 45
-- Vigueur <= 60 => 300 + 2200 + (Vigueur - 40) \* 35
-- Vigueur > 60 => 300 + 3000 + (Vigueur - 60) \* 25
+### Coût des Améliorations (Runes)
 
-### Coût des Améliorations
+Le prix pour monter un niveau suit une courbe exponentielle complexe :
 
-Le coût pour augmenter une statistique augmente de manière drastique avec votre niveau global :
+$$ Coût = \lfloor BaseCost \times ((x + 0.1) \times (Niveau + 81)^2 + 1) \rfloor $$ 
 
-$ Coût = \lfloor Base \times ((x + 0.1) \times (Niveau + 81)^2 + 1) \rfloor$$
-_(où $x$ augmente après le niveau 11)\_
+*   `BaseCost` dépend de la stat (ex: 1 pour Vigueur/Force/Dex/Int, 2 pour CritChance).
+*   `x` est un facteur qui augmente progressivement après le niveau 11.
 
 ---
 
 ## ⚰️ La Mort et la Grâce
 
-- **Échec :** Si vos PV tombent à zéro, vous perdez toutes les **Runes Portées** et retournez au camp.
-- **Sécurité :** Atteindre la moitié d'un biome débloque un **Site de Grâce**, soignant vos PV et sécurisant vos runes dans le coffre.
-- **Retraite :** Vous pouvez vous replier manuellement au camp à tout moment pour sécuriser vos gains, mais cela met fin à l'expédition actuelle.
+- **Échec :** 0 PV = Mort. Vous perdez toutes les **Runes Portées** (non sécurisées).
+- **Sites de Grâce :** À mi-chemin d'un biome (50% progression), vous activez un checkpoint. Vos PV sont restaurés et vos runes sécurisées.
+- **Victoire Boss :** Vaincre un boss sécurise vos runes, vous soigne, recharge vos cendres, et garantit un objet.
 
 ---
 
-> _Que la Grâce guide tes pas, Sans-Éclat._
+> *"L'analyse du code révèle que la prudence est mère de sûreté : sécurisez vos runes avant d'affronter un boss si vous n'êtes pas sûr de vous."*
