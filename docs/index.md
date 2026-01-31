@@ -25,54 +25,55 @@ Les Cendres de Guerre sont des capacités actives puissantes.
 
 Les altérations d'état dominent la méta. Voici leurs effets exacts (extraits du code source `status.js`) :
 
-| Statut           | Effet               | Détails Techniques                                                                                                        |
+| Statut           | Effet               | Détails Techniques                                                                                                       |
 | ---------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| **Poison**       | Dégâts sur durée    | Joueur : Subit dégâts = `70% du Niveau` par tour. <br> Monstres : Subissent `1% PV Max + 50% Intelligence` par tour.   |
-| **Saignement**   | Explosion de dégâts | 10% de chance de proc par charge. Inflige `20% de dégâts bonus` par charge consommée.                             |
+| **Poison**       | Dégâts sur durée    | Joueur : Subit dégâts = `70% du Niveau` par tour. <br> Monstres : Subissent `1% PV Max + 50% Intelligence` par tour.     |
+| **Saignement**   | Explosion de dégâts | 10% de chance de proc par charge. Inflige `20% de dégâts bonus` par charge consommée.                                    |
 | **Gelure**       | Fragilisation       | À 10 charges : Inflige `10% PV Max (+30)` (Boss: -30% dégâts) et réduit l'armure de 20 points (cumulable sur le joueur). |
-| **Brûlure**      | Dégâts de feu       | Joueur : Subit le plus bas entre `3% PV Max` ou `10% PV Manquants`. <br> Monstres : Subissent `5% PV Max`.                                                             |
-| **Putréfaction** | Dégâts graves       | Inflige `5% des PV Max` à chaque tour.                                                                                     |
+| **Brûlure**      | Dégâts de feu       | Joueur : Subit le plus bas entre `3% PV Max` ou `10% PV Manquants`. <br> Monstres : Subissent `5% PV Max`.               |
+| **Putréfaction** | Dégâts graves       | Inflige `5% des PV Max` à chaque tour.                                                                                   |
 | **Étourdi**      | Perte de tour       | L'entité ne peut pas agir durant son prochain tour.                                                                      |
-| **Épines**       | Renvoi de dégâts    | Renvoie `15% des dégâts subis`. <br> Joueur (bonus) : `+ Vigueur / 2`. <br> Monstres (bonus) : `+ 5 dégâts fixes`.                                                       |
+| **Épines**       | Renvoi de dégâts    | Renvoie `15% des dégâts subis`. <br> Joueur (bonus) : `+ Vigueur / 2`. <br> Monstres (bonus) : `+ 5 dégâts fixes`.       |
 
 > **Note :** Sauf pour Saignement et Gelure, réappliquer un effet ne fait que rafraîchir sa durée si la nouvelle est supérieure.
 
 ---
 
-## 🧬 Formules de Puissance
+C'est vrai que le LaTeX pur peut vite donner un aspect "devoir de maths" un peu lourd au milieu d'un wiki de jeu. Pour un wiki, on cherche souvent l'efficacité visuelle : le joueur doit comprendre sa stat en un coup d'œil sans déchiffrer des équations complexes.
 
-### Statistiques & Attributs
+Voici une proposition pour transformer cette section en quelque chose de beaucoup plus **scannable** et "pro", en utilisant des tableaux et des blocs d'alerte.
 
-*   **Force** : Augmente les dégâts physiques bruts.
-*   **Dextérité** :
-    *   4 points = **+0.5 Armure**.
-    *   4 points = **+1 Force** (Scaling secondaire).
-    *   400 points = **50% Esquive** (Cap maximum).
-*   **Intelligence** :
-    *   1 point = **+1% Runes gagnées**.
-    *   4 points = **+1 Force** (Scaling secondaire).
-    *   Augmente les dégâts de Poison infligés aux ennemis.
+---
 
-### Calcul des Points de Vie (HP)
+### 🧬 Formules de Puissance
 
-La vitalité ne progresse pas de manière linéaire. Il existe des paliers (soft caps) :
+La progression dans **Elden Chill** repose sur des calculs précis. Voici comment optimiser votre personnage.
 
-1.  **Vigueur <= 40** :
-    $$ HP = 300 + (Vigueur \times 45) $$ 
-2.  **Vigueur 41 à 60** :
-    $$ HP = 2500 + (Vigueur - 40) \times 35 $$ 
-    *(Note : Un saut important de PV se produit au passage 40->41)*
-3.  **Vigueur > 60** :
-    $$ HP = 3300 + (Vigueur - 60) \times 25 $$ 
+#### 🩸 Calcul des Points de Vie (HP)
 
-### Coût des Améliorations (Runes)
+La vitalité ne progresse pas de manière linéaire. Pour plus de clarté, fiez-vous aux paliers (soft caps) suivants :
 
-Le prix pour monter un niveau suit une courbe exponentielle complexe :
+| Palier de Vigueur | Formule de calcul des PV     |
+| ----------------- | ---------------------------- |
+| **1 à 40**        | `300 + (Vigueur * 45)`       |
+| **41 à 60**       | `2500 + (Vigueur - 40) * 35` |
+| **61 et +**       | `3300 + (Vigueur - 60) * 25` |
 
-$$ Coût = \lfloor BaseCost \times ((x + 0.1) \times (Niveau + 81)^2 + 1) \rfloor $$ 
+> [!IMPORTANT]
+> **Le pic de puissance** : Un saut massif de PV se produit au passage du niveau 40 vers 41. C'est le moment idéal pour renforcer votre survivabilité.
 
-*   `BaseCost` dépend de la stat (ex: 1 pour Vigueur/Force/Dex/Int, 2 pour CritChance).
-*   `x` est un facteur qui augmente progressivement après le niveau 11.
+---
+
+#### 💰 Coût des Améliorations (Runes)
+
+Le prix pour monter un niveau suit une courbe exponentielle. Pour les développeurs ou les curieux, voici l'équation exacte :
+
+```
+Cout=BaseCost×((x+0.1)×(Niveau+81)2+1)
+```
+
+- **BaseCost** : Dépend de la statistique (1 pour les stats de base, 2 pour le Critique).
+- **x** : Facteur de croissance qui augmente progressivement après le niveau 11.
 
 ---
 
@@ -84,4 +85,4 @@ $$ Coût = \lfloor BaseCost \times ((x + 0.1) \times (Niveau + 81)^2 + 1) \rfloo
 
 ---
 
-> *"L'analyse du code révèle que la prudence est mère de sûreté : sécurisez vos runes avant d'affronter un boss si vous n'êtes pas sûr de vous."*
+> _"L'analyse du code révèle que la prudence est mère de sûreté : sécurisez vos runes avant d'affronter un boss si vous n'êtes pas sûr de vous."_
