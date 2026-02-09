@@ -30,7 +30,7 @@ Les altérations d'état dominent la méta. Voici leurs effets exacts (extraits 
 | **Poison**       | Dégâts sur durée    | Joueur : Subit dégâts = `70% du Niveau` par tour. <br> Monstres : Subissent `1% PV Max + 50% Intelligence` par tour.     |
 | **Saignement**   | Explosion de dégâts | 10% de chance de proc par charge. Inflige `20% de dégâts bonus` par charge consommée.                                    |
 | **Gelure**       | Fragilisation       | À 10 charges : Inflige `10% PV Max (+30)` (Boss: -30% dégâts) et réduit l'armure de 20 points (cumulable sur le joueur). |
-| **Brûlure**      | Dégâts de feu       | Joueur : Subit le plus bas entre `3% PV Max` ou `10% PV Manquants`. <br> Monstres : Subissent `5% PV Max`.               |
+| **Brûlure**      | Dégâts de feu       | Joueur : Subit le plus bas entre `2% PV Max` ou `10% PV Manquants`. Max`.                                                |
 | **Putréfaction** | Dégâts graves       | Inflige `5% des PV Max` à chaque tour.                                                                                   |
 | **Étourdi**      | Perte de tour       | L'entité ne peut pas agir durant son prochain tour.                                                                      |
 | **Épines**       | Renvoi de dégâts    | Renvoie `15% des dégâts subis`. <br> Joueur (bonus) : `+ Vigueur / 2`. <br> Monstres (bonus) : `+ 5 dégâts fixes`.       |
