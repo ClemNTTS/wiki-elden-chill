@@ -10,6 +10,7 @@ export default {
     nav: [
       { text: "Accueil", link: "/" },
       { text: "Objets", link: "/items" },
+      { text: "Panoplies", link: "/sets" },
       { text: "Cendres", link: "/ashes" },
       { text: "Bestiaire", link: "/bestiary" },
       { text: "Biomes", link: "/biomes" },
@@ -19,6 +20,7 @@ export default {
         text: "Données",
         items: [
           { text: "Équipement", link: "/items" },
+          { text: "Panoplies", link: "/sets" },
           { text: "Cendres de Guerre", link: "/ashes" },
           { text: "Bestiaire", link: "/bestiary" },
           { text: "Biomes", link: "/biomes" },

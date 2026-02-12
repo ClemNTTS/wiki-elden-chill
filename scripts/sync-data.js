@@ -27,30 +27,27 @@ async function getRemoteData(fileName) {
   const text = await response.text();
   const cleaned = cleanContent(text);
 
-  // On utilise 'let' pour toutes nos variables de secours (mocks)
-  // Elles seront écrasées par les valeurs de tes fichiers
   const code = `
-    let gameState = { world: { unlockedBiomes: [], currentBiome: "" }, stats: { level: 1, intelligence: 10 }, equipped: {} };
-    let runtimeState = { playerCurrentHp: 100, playerArmorDebuff: 0 };
+    let gameState = { world: { unlockedBiomes: [] }, stats: { level: 1 } };
+    let runtimeState = { playerCurrentHp: 100 };
     let getHealth = () => 100;
-    let getEffectiveStats = () => ({ strength: 10, vigor: 10, intelligence: 10, dexterity: 10, critChance: 0, critDamage: 1.5 });
+    let getEffectiveStats = () => ({ strength: 10 });
     let ActionLog = () => {};
     let ITEM_TYPES = { WEAPON: "Arme", ARMOR: "Armure", ACCESSORY: "Accessoire" };
-    let ITEMS = null;
-    let MONSTERS = null;
-    let BIOMES = null;
-    let LOOT_TABLES = null;
-    let ASHES_OF_WAR = null;
+    
+    // Initialisation des variables pour éviter les ReferenceError
+    let ITEMS = {}; 
+    let ITEM_SETS = {};
+    let MONSTERS = {};
+    let BIOMES = {};
+    let LOOT_TABLES = {};
+    let ASHES_OF_WAR = {};
+    let NOKRON = {}; // Support pour les sous-fichiers
+    let RIVER = {}; // Support pour les sous-fichiers
 
     ${cleaned}
 
-    return { 
-      MONSTERS, 
-      ITEMS, 
-      BIOMES, 
-      LOOT_TABLES, 
-      ASHES_OF_WAR
-    };
+    return { MONSTERS, ITEMS, BIOMES, LOOT_TABLES, ASHES_OF_WAR, ITEM_SETS, NOKRON, RIVER };
   `;
 
   try {
@@ -65,12 +62,21 @@ async function startSync() {
   console.log("⚔️ Synchronisation du Grimoire...");
   try {
     const monsterData = await getRemoteData("monster.js");
-    const itemData = await getRemoteData("item.js");
+    const mainItemData = await getRemoteData("item.js");
+    const nokronData = await getRemoteData("items/nokron.js"); // Fetch sub-file
+    const riverData = await getRemoteData("items/river.js"); // Fetch sub-file
     const biomeData = await getRemoteData("biome.js");
     const ashData = await getRemoteData("ashes.js");
 
+    // Fusion intelligente des items pour l'onglet Équipement
+    const ITEMS = {
+      ...(mainItemData?.ITEMS || {}),
+      ...(nokronData?.NOKRON || {}),
+      ...(riverData?.RIVER || {}),
+    };
+
+    const ITEM_SETS = mainItemData?.ITEM_SETS || {};
     const MONSTERS = monsterData?.MONSTERS || {};
-    const ITEMS = itemData?.ITEMS || {};
     const ASHES = ashData?.ASHES_OF_WAR || {};
     const BIOMES = biomeData?.BIOMES || {};
     const LOOT_TABLES = biomeData?.LOOT_TABLES || {};
@@ -134,6 +140,20 @@ async function startSync() {
         md += `\n---\n\n`;
       });
       fs.writeFileSync(path.join(DOCS_PATH, "biomes.md"), md);
+    }
+
+    //Panoplies
+    if (ITEM_SETS) {
+      let md =
+        "# 🛡️ Panoplies (Sets)\n\nChaque panoplie offre des bonus puissants lorsque vous équipez plusieurs pièces du même set.\n\n";
+      Object.entries(ITEM_SETS).forEach(([id, set]) => {
+        md += `## ${set.name}\n`;
+        Object.entries(set.bonuses).forEach(([count, bonus]) => {
+          md += `- **(${count} pièces)** : ${bonus.desc}\n`;
+        });
+        md += `\n---\n\n`;
+      });
+      fs.writeFileSync(path.join(DOCS_PATH, "sets.md"), md);
     }
 
     console.log("✅ Toutes les pages ont été générées avec succès !");
