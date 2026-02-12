@@ -61,21 +61,20 @@ async function getRemoteData(fileName) {
 async function startSync() {
   console.log("⚔️ Synchronisation du Grimoire...");
   try {
-    const monsterData = await getRemoteData("monster.js");
+    const constantsData = await getRemoteData("constants.js"); // NOUVEAU
     const mainItemData = await getRemoteData("item.js");
-    const nokronData = await getRemoteData("items/nokron.js"); // Fetch sub-file
-    const riverData = await getRemoteData("items/river.js"); // Fetch sub-file
+    const nokronData = await getRemoteData("items/nokron.js");
+    const riverData = await getRemoteData("items/river.js");
     const biomeData = await getRemoteData("biome.js");
     const ashData = await getRemoteData("ashes.js");
+    const monsterData = await getRemoteData("monster.js");
 
-    // Fusion intelligente des items pour l'onglet Équipement
+    const ITEM_SETS = constantsData?.ITEM_SETS || {}; // Chargé depuis constants.js
     const ITEMS = {
       ...(mainItemData?.ITEMS || {}),
       ...(nokronData?.NOKRON || {}),
       ...(riverData?.RIVER || {}),
     };
-
-    const ITEM_SETS = mainItemData?.ITEM_SETS || {};
     const MONSTERS = monsterData?.MONSTERS || {};
     const ASHES = ashData?.ASHES_OF_WAR || {};
     const BIOMES = biomeData?.BIOMES || {};
@@ -111,9 +110,33 @@ async function startSync() {
 
     // 2. GÉNÉRATION ITEMS
     if (ITEMS) {
-      let md = "# ⚔️ Équipement\n\n";
+      let md = "# ⚔️ Catalogue d'Équipement\n\n";
+
+      // On groupe les items par type
+      const categories = { Arme: [], Armure: [], Accessoire: [] };
       Object.values(ITEMS).forEach((i) => {
-        md += `### ${i.name}\n- **Type :** ${i.type}\n- **Effet :** ${i.description.replace(/<[^>]*>/g, "")}\n\n`;
+        if (categories[i.type]) categories[i.type].push(i);
+      });
+
+      Object.entries(categories).forEach(([type, items]) => {
+        md += `## 🛡️ Catégorie : ${type}s\n\n`;
+        md += `| Nom | Description & Effets | Prérequis |\n`;
+        md += `| :--- | :--- | :--- |\n`;
+
+        items
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .forEach((i) => {
+            // Extraction propre des prérequis (ex: "Requiert 30 Force")
+            const reqMatch = i.description.match(/Requiert [^.]+/);
+            const requirements = reqMatch ? `**${reqMatch[0]}**` : "Aucun";
+            const effect = i.description
+              .replace(/Requiert [^.]+/, "")
+              .replace(/<[^>]*>/g, "")
+              .trim();
+
+            md += `| **${i.name}** | ${effect} | ${requirements} |\n`;
+          });
+        md += `\n\n`;
       });
       fs.writeFileSync(path.join(DOCS_PATH, "items.md"), md);
     }
@@ -144,12 +167,19 @@ async function startSync() {
 
     //Panoplies
     if (ITEM_SETS) {
-      let md =
-        "# 🛡️ Panoplies (Sets)\n\nChaque panoplie offre des bonus puissants lorsque vous équipez plusieurs pièces du même set.\n\n";
+      let md = "# 🛡️ Panoplies (Sets)\n\n";
       Object.entries(ITEM_SETS).forEach(([id, set]) => {
-        md += `## ${set.name}\n`;
+        md += `### ${set.name}\n`;
+        // Trouver quels items appartiennent à ce set pour aider le joueur
+        const setPieces = Object.values(ITEMS)
+          .filter((i) => i.set === id)
+          .map((i) => i.name)
+          .join(", ");
+
+        md += `*Pièces du set : ${setPieces || "Non répertoriées"}*\n\n`;
+
         Object.entries(set.bonuses).forEach(([count, bonus]) => {
-          md += `- **(${count} pièces)** : ${bonus.desc}\n`;
+          md += `- **[${count} pcs]** : ${bonus.desc}\n`;
         });
         md += `\n---\n\n`;
       });
