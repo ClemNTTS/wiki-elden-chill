@@ -39,12 +39,6 @@ Les altérations d'état dominent la méta. Voici leurs effets exacts (extraits 
 
 ---
 
-C'est vrai que le LaTeX pur peut vite donner un aspect "devoir de maths" un peu lourd au milieu d'un wiki de jeu. Pour un wiki, on cherche souvent l'efficacité visuelle : le joueur doit comprendre sa stat en un coup d'œil sans déchiffrer des équations complexes.
-
-Voici une proposition pour transformer cette section en quelque chose de beaucoup plus **scannable** et "pro", en utilisant des tableaux et des blocs d'alerte.
-
----
-
 ### 🧬 Formules de Puissance
 
 La progression dans **Elden Chill** repose sur des calculs précis. Voici comment optimiser votre personnage.
