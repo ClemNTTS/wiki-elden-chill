@@ -21,7 +21,7 @@ Ce surplus de niveaux sert surtout à absorber :
 
 - la nouvelle route terrestre `Altus -> Gelmir -> Cimes -> Farum`
 - les résistances de biome
-- les nouvelles bénédictions et consommables
+- les nouvelles bénédictions et atouts d'expédition
 - les besoins défensifs du very late game
 
 ## Route recommandée
@@ -130,7 +130,7 @@ La préparation n'est pas là pour remplacer le build ; elle sert à lisser un b
 Le modèle courant est volontairement simple :
 
 - **1 bénédiction**
-- **1 consommable**
+- **1 atout d'expédition**
 
 Les hazards principaux sont :
 

@@ -3,7 +3,7 @@
 Bienvenue dans le grimoire officiel de **Elden Chill**. Cette version du wiki documente la refonte `v2.3` du jeu :
 
 - carte de campagne et progression terrestre et souterraine
-- préparation d'expédition avec bénédictions et consommables
+- préparation d'expédition avec bénédictions et atouts d'expédition
 - journal d'exploration et Codex
 - nouveaux biomes late-game jusqu'à **Farum Azula**
 - nouvelles cendres, nouveaux sets et rareté de loot
@@ -24,13 +24,13 @@ Elden Chill repose toujours sur la même boucle :
 Chaque expédition peut maintenant être modifiée par :
 
 - **1 bénédiction** persistante dans le loadout
-- **1 consommable** dépensé au départ
+- **1 atout d'expédition** sélectionné au départ
 
 Ces éléments ne sont **pas tous disponibles dès le début** :
 
 - début de save : `Bénédiction des Runes` + `Fiole du pisteur`
 - autres bénédictions : gagnées via autels ou nettoyage de biomes
-- autres consommables : gagnés via caravanes, biomes nettoyés ou progressions majeures
+- autres atouts d'expédition : gagnés via caravanes, biomes nettoyés ou progressions majeures
 
 ### Hazards de biome
 

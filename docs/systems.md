@@ -5,7 +5,7 @@
 Une expédition suit maintenant ce rythme :
 
 1. choix du biome sur la carte
-2. sélection d'une bénédiction et d'un consommable
+2. sélection d'une bénédiction et d'un atout d'expédition
 3. traversée du biome
 4. checkpoint au site de grâce
 5. boss final
@@ -18,7 +18,7 @@ Pendant l'exploration, certains événements contextuels peuvent se déclencher.
 ### Caravane perdue
 
 - donne des runes portées
-- peut débloquer un nouveau consommable de préparation
+- peut débloquer un nouvel atout d'expédition
 - peut améliorer la qualité des butins pendant la run
 
 ### Patrouille rare
@@ -75,7 +75,7 @@ Pendant l'exploration, certains événements contextuels peuvent se déclencher.
 - `+5 Résistance Folie`
 - `+4% Chance de critique effective`
 
-## Consommables
+## Atouts d'expédition
 
 ### Fiole du pisteur
 
