@@ -23,6 +23,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout game data
+        uses: actions/checkout@v4
+        with:
+          repository: ClemNTTS/elden-chill
+          path: game-source
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -34,6 +40,8 @@ jobs:
 
       - name: Sync Data from Game
         run: npm run sync
+        env:
+          ELDEN_CHILL_GAME_PATH: game-source
 
       - name: Build with VitePress
         run: npm run docs:build

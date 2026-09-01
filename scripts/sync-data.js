@@ -3,7 +3,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const GAME = path.resolve(ROOT, "../elden-chill");
+const GAME = process.env.ELDEN_CHILL_GAME_PATH
+  ? path.resolve(ROOT, process.env.ELDEN_CHILL_GAME_PATH)
+  : path.resolve(ROOT, "../elden-chill");
 const DOCS = path.join(ROOT, "docs");
 const read = (file) => fs.readFileSync(path.join(GAME, file), "utf8");
 const clean = (source) => source
