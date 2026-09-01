@@ -1,36 +1,17 @@
-export default {
-  base: "/wiki-elden-chill/",
-  title: "Elden Chill Wiki",
-  description: "Grimoire de l'Entre-Terre",
-  head: [["link", { rel: "icon", href: "/wiki-elden-chill/favicon.ico" }]],
+import { defineConfig } from "vitepress";
+export default defineConfig({
+  lang: "fr-FR", base: "/wiki-elden-chill/", title: "Elden Chill", titleTemplate: ":title — Wiki", description: "Le grimoire officiel et à jour d’Elden Chill.",
+  head: [["link", { rel: "icon", href: "/wiki-elden-chill/favicon.ico" }], ["meta", { name: "theme-color", content: "#100e0d" }]],
   themeConfig: {
-    logo: "/favicon.ico",
-    nav: [
-      { text: "Accueil", link: "/" },
-      { text: "Systèmes", link: "/systems" },
-      { text: "Équilibrage", link: "/balance" },
-      { text: "Biomes", link: "/biomes" },
-      { text: "Objets", link: "/items" },
-      { text: "Cendres", link: "/ashes" },
-      { text: "Bestiaire", link: "/bestiary" },
-    ],
+    logo: "/favicon.ico", siteTitle: "Elden Chill · Wiki", search: { provider: "local" },
+    nav: [{ text:"Commencer",link:"/getting-started" },{ text:"Campagne",link:"/biomes" },{ text:"Builds",link:"/items" },{ text:"Données",link:"/data" }],
     sidebar: [
-      {
-        text: "Guide V2.3",
-        items: [
-          { text: "Accueil", link: "/" },
-          { text: "Systèmes", link: "/systems" },
-          { text: "Équilibrage", link: "/balance" },
-          { text: "Biomes", link: "/biomes" },
-          { text: "Équipement et rareté", link: "/items" },
-          { text: "Cendres de guerre", link: "/ashes" },
-          { text: "Bestiaire", link: "/bestiary" },
-        ],
-      },
+      { text:"Le jeu",items:[{text:"Vue d’ensemble",link:"/"},{text:"Bien commencer",link:"/getting-started"},{text:"Combat et statistiques",link:"/combat"},{text:"Systèmes d’expédition",link:"/systems"},{text:"Préparation",link:"/preparation"}]},
+      { text:"Encyclopédie",items:[{text:"Atlas des biomes",link:"/biomes"},{text:"Équipement et panoplies",link:"/items"},{text:"Cendres de guerre",link:"/ashes"},{text:"Bestiaire",link:"/bestiary"}]},
+      { text:"Fin de partie",items:[{text:"Renaissance et épreuves",link:"/rebirth"},{text:"Équilibrage",link:"/balance"},{text:"État des données",link:"/data"}]},
     ],
-    footer: {
-      message: "Que la Grâce guide tes pas.",
-      copyright: "© 2026 Elden Chill",
-    },
+    outline:{level:[2,3],label:"Sur cette page"},
+    editLink:{pattern:"https://github.com/ClemNTTS/wiki-elden-chill/edit/main/docs/:path",text:"Corriger cette page"},
+    footer:{message:"Que la Grâce guide tes pas.",copyright:"Elden Chill · œuvre de fan non affiliée à FromSoftware"},
   },
-};
+});

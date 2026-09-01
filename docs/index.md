@@ -1,76 +1,52 @@
-# Elden Chill Wiki
+---
+layout: home
+hero:
+  name: Elden Chill
+  text: Le grimoire du Sans-Éclat
+  tagline: Guide complet de l’incremental RPG — campagne, builds, afflictions et renaissance, synchronisés avec la version 2.5.0.
+  image:
+    src: /game/camp-preview.png
+    alt: Camp nocturne d’Elden Chill
+  actions:
+    - theme: brand
+      text: Bien commencer
+      link: /getting-started
+    - theme: alt
+      text: Explorer l’atlas
+      link: /biomes
+features:
+  - icon: ⚔️
+    title: Construire un build
+    details: Trois objets, une cendre, quatre statistiques et des synergies qui comptent davantage que le niveau brut.
+    link: /items
+  - icon: 🗺️
+    title: Choisir sa route
+    details: Une campagne ramifiée en dix chapitres, avec détours, zones secrètes et niveaux conseillés.
+    link: /biomes
+  - icon: 🔥
+    title: Préparer l’expédition
+    details: Bénédictions, atouts, événements, afflictions et décisions de risque avant chaque départ.
+    link: /preparation
+  - icon: ♻️
+    title: Recommencer plus fort
+    details: Renaissance, arbre permanent et quatre épreuves après la campagne.
+    link: /rebirth
+---
 
-Bienvenue dans le grimoire officiel de **Elden Chill**. Cette version du wiki documente la refonte `v2.3` du jeu :
+## Le jeu en une minute
 
-- carte de campagne et progression terrestre et souterraine
-- préparation d'expédition avec bénédictions et atouts d'expédition
-- journal d'exploration et Codex
-- nouveaux biomes late-game jusqu'à **Farum Azula**
-- nouvelles cendres, nouveaux sets et rareté de loot
+**Elden Chill** est un RPG incrémental solo dans le navigateur. Au camp, vous dépensez vos runes, équipez une arme, une armure, un accessoire et une cendre. En expédition, les combats s’enchaînent automatiquement : continuer augmente le rendement, mais une défaite fait perdre les runes portées.
 
-## Vue d'ensemble
+La décision centrale reste : **pousser plus loin, ou rentrer sécuriser ses gains ?**
 
-Elden Chill repose toujours sur la même boucle :
+![Le camp d’Elden Chill, dans sa direction artistique actuelle](/game/camp-preview.png)
 
-1. construire un build lisible avec 3 emplacements d'équipement et 1 cendre
-2. préparer l'expédition avant de quitter le camp
-3. traverser un biome, sécuriser ses runes au site de grâce, puis tomber le boss
-4. débloquer de nouvelles routes, de nouveaux systèmes, de nouveaux outils de build
+Ce wiki suit le code local, actuellement en **version 2.5.0**. Ses catalogues sont régénérés depuis les données du jeu pour éviter toute dérive.
 
-## Ce qui change en v2.3
+- [Apprendre la boucle de jeu](./getting-started)
+- [Comprendre les statistiques et le combat](./combat)
+- [Consulter les données synchronisées](./data)
 
-### Préparation avant exploration
-
-Chaque expédition peut maintenant être modifiée par :
-
-- **1 bénédiction** persistante dans le loadout
-- **1 atout d'expédition** sélectionné au départ
-
-Ces éléments ne sont **pas tous disponibles dès le début** :
-
-- début de save : `Bénédiction des Runes` + `Fiole du pisteur`
-- autres bénédictions : gagnées via autels ou nettoyage de biomes
-- autres atouts d'expédition : gagnés via caravanes, biomes nettoyés ou progressions majeures
-
-### Hazards de biome
-
-Chaque biome avancé possède désormais une ou plusieurs afflictions dominantes :
-
-- `Poison`
-- `Gel`
-- `Folie`
-- `Putréfaction`
-
-Les nouvelles résistances n'apparaissent pas comme stats primaires, mais existent bien dans les stats effectives, les objets, la préparation et les tooltips.
-
-### Rareté de loot
-
-Les objets utilisent maintenant 4 raretés :
-
-- `commun`
-- `rare`
-- `legendaire`
-- `relique`
-
-La rareté a deux rôles :
-
-- **lecture visuelle** dans l'inventaire et les tooltips
-- **pondération de loot** quand un effet augmente la qualité du butin, par exemple via la `Lentille de relique` ou certains événements
-
-### Niveaux et endgame
-
-Le cap de niveau est maintenant **150**.
-
-- `0-100` : cœur du build
-- `101-150` : spécialisation late-game, résistances, préparation et montée finale
-
-## Lire le wiki
-
-- [Systèmes](./systems)
-- [Biomes](./biomes)
-- [Objets et rareté](./items)
-- [Cendres de guerre](./ashes)
-- [Bestiaire](./bestiary)
-- [Équilibrage](./balance)
-
-> Le wiki est aligné sur le code courant du jeu local, pas sur une ancienne release.
+::: warning Œuvre de fan
+Elden Chill est une œuvre de fan non commerciale inspirée par l’atmosphère d’Elden Ring, sans affiliation avec FromSoftware.
+:::
