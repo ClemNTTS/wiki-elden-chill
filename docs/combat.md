@@ -15,6 +15,12 @@ Le combat se résout par tours. La partie fractionnaire des attaques supplément
 
 La courbe d’attaques suit `(Dextérité / 60)^1,75` et récompense une spécialisation nette.
 
+## Mitigation de boss (« Mitig Boss »)
+
+**Mitig Boss** est le pourcentage de dégâts que vous réduisez **uniquement contre les attaques des boss**. Il ne diminue ni les dégâts des ennemis ordinaires, ni les dégâts que vous leur infligez.
+
+Par exemple, avec **12 % de Mitig Boss**, une attaque de boss qui devrait infliger 100 dégâts n’en inflige plus que **88**. La valeur affichée dans la fiche de personnage est votre total actif, issu notamment de l’équipement, des panoplies et des atouts d’expédition.
+
 ## Armure et critiques
 
 L’armure divise les dégâts physiques. Les dégâts magiques sont ajoutés ensuite, ce qui donne à l’Intelligence son identité contre les ennemis blindés.
