@@ -8,7 +8,7 @@
 4. Surveillez vos PV pendant les combats automatiques.
 5. Rentrez sécuriser les runes portées, ou franchissez le cycle et son boss.
 
-Les runes sécurisées survivent à la mort. Les runes portées sont perdues si l’expédition échoue.
+Les runes de base d’un cycle terminé sont sécurisées. Seule la réserve gagnée avec la Ferveur est perdue si l’expédition échoue ; rentrez volontairement au camp pour l’encaisser.
 
 ## Premier build
 

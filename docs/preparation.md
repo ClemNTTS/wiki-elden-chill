@@ -24,6 +24,6 @@ Choisissez une bénédiction persistante et un atout consommé pour l'expéditio
 | Fiole du pisteur | Multiplie par 1.8 les chances de rencontrer une élite rare pendant la prochaine expédition. |
 | Résine de sentinelle | Réduit de 12% les dégâts reçus des boss pendant la prochaine expédition. |
 | Lentille de relique | Ajoute +30% de pondération aux raretés supérieures dans les tirages de butin de la prochaine expédition. |
-| Onguent anti-braise | Reduit de 25% les degats recus pendant la prochaine expedition et donne +20 d'armure. |
+| Onguent anti-braise | Reduit de 10% les degats recus des boss pendant la prochaine expedition et donne +20 d'armure. |
 | Encensoir a runes | +45% de gain de runes pendant la prochaine expedition. |
 | Decoction de la Purge | +6 a toutes les resistances pendant la prochaine expedition. |

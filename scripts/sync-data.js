@@ -23,14 +23,15 @@ const runtimeState = { playerCurrentHp: 100 };
 const ITEM_RARITIES = { COMMON: "commun", RARE: "rare", LEGENDARY: "legendaire", RELIC: "relique" };
 const stubs = { applyEffect: noop, ActionLog: noop, gameState, runtimeState, getHealth: () => 100, getEffectiveStats: () => ({ vigor: 10 }), healPlayer: noop };
 
-const { ITEM_TYPES, ITEM_SETS } = evaluate("constants.js", ["ITEM_TYPES", "ITEM_SETS"]);
+const { ITEM_TYPES, ITEM_SETS, CONTRACT_ITEM_IDS, SETS_PAR_ARCHETYPE, HAZARD_LABELS } = evaluate("constants.js", ["ITEM_TYPES", "ITEM_SETS", "CONTRACT_ITEM_IDS", "SETS_PAR_ARCHETYPE", "HAZARD_LABELS"]);
 const itemScope = { ITEM_TYPES, ITEM_RARITIES, ...stubs };
 const { DEPTHS } = evaluate("items/depths.js", ["DEPTHS"], itemScope);
 const { NOKRON } = evaluate("items/nokron.js", ["NOKRON"], itemScope);
 const { RIVER } = evaluate("items/river.js", ["RIVER"], itemScope);
 const { V21_ITEMS } = evaluate("items/v21.js", ["V21_ITEMS"], itemScope);
 const { LANDS_ITEMS } = evaluate("items/lands.js", ["LANDS_ITEMS"], itemScope);
-const { ITEMS } = evaluate("item.js", ["ITEMS"], { ITEM_TYPES, DEPTHS, NOKRON, RIVER, V21_ITEMS, LANDS_ITEMS, ...stubs });
+const { CONTRACT_ITEMS } = evaluate("items/contracts.js", ["CONTRACT_ITEMS"], { ITEM_TYPES, CONTRACT_ITEM_IDS, SETS_PAR_ARCHETYPE, ...stubs });
+const { ITEMS } = evaluate("item.js", ["ITEMS"], { ITEM_TYPES, DEPTHS, NOKRON, RIVER, V21_ITEMS, LANDS_ITEMS, CONTRACT_ITEMS, ...stubs });
 const { V21_MONSTERS } = evaluate("monsters/v21.js", ["V21_MONSTERS"], stubs);
 const { ENDGAME_MONSTERS, TRIAL_MONSTERS } = evaluate("monsters/endgame.js", ["ENDGAME_MONSTERS", "TRIAL_MONSTERS"], stubs);
 const { LANDS_MONSTERS } = evaluate("monsters/lands.js", ["LANDS_MONSTERS"], stubs);
@@ -38,8 +39,8 @@ const { MONSTERS } = evaluate("monster.js", ["MONSTERS"], { V21_MONSTERS, ENDGAM
 const { BIOMES, LOOT_TABLES } = evaluate("biome.js", ["BIOMES", "LOOT_TABLES"]);
 const { BIOME_GUIDE } = evaluate("world-map.js", ["BIOME_GUIDE"], { BIOMES });
 const { ASHES_OF_WAR } = evaluate("ashes.js", ["ASHES_OF_WAR"], stubs);
-const { BLESSINGS, PREP_CONSUMABLES, PREPARATION_UNLOCKS, HAZARD_LABELS } = evaluate("systems.js", ["BLESSINGS", "PREP_CONSUMABLES", "PREPARATION_UNLOCKS", "HAZARD_LABELS"], { BIOMES, ITEMS, BIOME_GUIDE, ...stubs });
-const { FINAL_BIOME_ID, REBIRTH_NODES, TRIALS } = evaluate("rebirth.js", ["FINAL_BIOME_ID", "REBIRTH_NODES", "TRIALS"], { gameState, runtimeState, MAX_LEVEL: 150 });
+const { BLESSINGS, PREP_CONSUMABLES, PREPARATION_UNLOCKS } = evaluate("systems.js", ["BLESSINGS", "PREP_CONSUMABLES", "PREPARATION_UNLOCKS"], { BIOMES, ITEMS, BIOME_GUIDE, HAZARD_LABELS, ...stubs });
+const { FINAL_BIOME_ID, REBIRTH_NODES, TRIALS } = evaluate("rebirth.js", ["FINAL_BIOME_ID", "REBIRTH_NODES", "TRIALS"], { gameState, runtimeState, MAX_LEVEL: 365 });
 
 const esc = (v = "") => String(v).replace(/\|/g, "\\|").replace(/\n/g, " ");
 const plain = (v = "") => esc(v).replace(/<[^>]+>/g, "").trim();
@@ -71,9 +72,10 @@ const biomeRows = Object.entries(BIOME_GUIDE).sort((a,b) => (a[1].chapter || "")
   const b = BIOMES[id] || {}, unlock = PREPARATION_UNLOCKS[id];
   const reward = unlock?.blessingId ? BLESSINGS[unlock.blessingId]?.name : unlock?.consumableId ? PREP_CONSUMABLES[unlock.consumableId]?.name : "—";
   const hazards = (g.hazards || []).map((h) => HAZARD_LABELS[h] || h).join(", ") || "—";
-  return `| ${esc(b.name || id)} | ${esc(g.chapter)} | ${g.recommendedLevel?.join("–") || "—"} | ${esc(g.danger)} | ${esc(hazards)} | ${esc(monsterName(b.boss))} | ${esc(reward)} |`;
+  const rares = (b.rareMonsters || []).map(monsterName).join(", ") || "—";
+  return `| ${esc(b.name || id)} | ${esc(g.chapter)} | ${g.recommendedLevel?.join("–") || "—"} | ${esc(g.danger)} | ${esc(hazards)} | ${esc(rares)} | ${esc(monsterName(b.boss))} | ${esc(reward)} |`;
 }).join("\n");
-write("biomes.md", `# Atlas des biomes\n\n> **${Object.keys(BIOMES).length} biomes** et **${Object.keys(BIOME_GUIDE).length} entrées d'atlas**.\n\nLa campagne forme un graphe à branches. Le chapitre X mène à **${monsterName(BIOMES[FINAL_BIOME_ID]?.boss)}**, dont la victoire ouvre la renaissance.\n\n| Zone | Chapitre | Niveau | Danger | Afflictions | Boss | Déblocage |\n| --- | --- | ---: | --- | --- | --- | --- |\n${biomeRows}`);
+write("biomes.md", `# Atlas des biomes\n\n> **${Object.keys(BIOMES).length} biomes** et **${Object.keys(BIOME_GUIDE).length} entrées d'atlas**.\n\nLa campagne forme un graphe à branches. Le chapitre X mène à **${monsterName(BIOMES[FINAL_BIOME_ID]?.boss)}**, dont la victoire ouvre la renaissance. La colonne **Rares possibles** recense les créatures rares susceptibles d’apparaître dans chaque zone.\n\n| Zone | Chapitre | Niveau | Danger | Afflictions | Rares possibles | Boss | Déblocage |\n| --- | --- | ---: | --- | --- | --- | --- | --- |\n${biomeRows}`);
 
 const blessings = Object.values(BLESSINGS).map((b) => `| ${esc(b.name)} | ${plain(b.detailedDescription || b.description)} |`).join("\n");
 const consumables = Object.values(PREP_CONSUMABLES).map((c) => `| ${esc(c.name)} | ${plain(c.detailedDescription || c.description)} |`).join("\n");

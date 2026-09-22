@@ -10,7 +10,7 @@
 
 ## Plafonds et voies
 
-Le plafond initial est **150**. Chaque renaissance ajoute 10 niveaux, plus le nœud Volonté. La campagne va jusqu’au chapitre X et au Trône de l’Arbre ; quatre épreuves prolongent ensuite le jeu.
+Le plafond de niveau suit la progression principale : il démarre à **25** et gagne **20 niveaux** après chaque boss du parcours principal. Il peut atteindre **365** avant renaissance, afin d’accompagner la campagne jusqu’au Trône de l’Arbre. Chaque renaissance ajoute ensuite 10 niveaux, plus le nœud Volonté. Les biomes optionnels donnent du butin, mais ne relèvent pas ce plafond ; quatre épreuves prolongent ensuite le jeu.
 
 - Force : dégâts physiques directs, sensibles à l’armure.
 - Dextérité : cadence, esquive et applications de statut.

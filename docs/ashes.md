@@ -1,6 +1,6 @@
 # Cendres de guerre
 
-> **18 cendres** dans la version actuelle.
+> **28 cendres** dans la version actuelle.
 
 Une seule cendre peut être équipée. Ses charges sont limitées par expédition, puis peuvent être augmentées par la renaissance.
 
@@ -20,7 +20,7 @@ Augmente vos dégats légèrement et étourdit l'ennemi au prochain coup.
 
 ### Entaille Sanglante
 
-Sacrifie 5% de vos PV max pour infliger d'énormes dégâts (x2.5) et 3 saignements.
+Sacrifie 5% de vos PV actuels pour infliger d'énormes dégâts (x2.5) et 3 saignements.
 
 - Charges de base : **3**
 - ID : `bloody_slash`
@@ -129,3 +129,73 @@ Le serment de l'Ordre : +40% de degats sur votre prochaine attaque, et 60 d'armu
 
 - Charges de base : **3**
 - ID : `golden_vow`
+
+### Decret de l'Ordre
+
+Le prochain coup ignore l'armure adverse. Plus la cible est blindee, plus le decret pese.
+
+- Charges de base : **2**
+- ID : `order_decree`
+
+### Sceau de Mort
+
+Scelle les soins de la cible pendant 4 tours : regeneration, drain et absorption ne lui rendent plus rien.
+
+- Charges de base : **2**
+- ID : `death_seal`
+
+### Echo brise
+
+Brise les echos : degats de zone egaux a 15% des PV restants de la cible principale.
+
+- Charges de base : **2**
+- ID : `broken_echo`
+
+### Larme de Miquella
+
+Efface toutes vos afflictions et rend 35% de vos PV maximum.
+
+- Charges de base : **1**
+- ID : `miquella_tear`
+
+### Serment cendreux
+
+Convertit votre rang de Ferveur en puissance : +25% de degats par rang, jusqu'a x3,5.
+
+- Charges de base : **2**
+- ID : `ashen_oath`
+
+### Rugissement bestial
+
+Change votre masse en menace : degats de zone egaux a 6% de vos PV maximum, et l'ennemi saigne.
+
+- Charges de base : **3**
+- ID : `beast_roar`
+
+### Danse des lames
+
+Deux attaques supplementaires au prochain tour, et le saignement pour les accompagner.
+
+- Charges de base : **2**
+- ID : `blade_dance`
+
+### Comete d'Azur
+
+Un rayon continu sur une seule cible : degats doubles, plus 1% par point d'Intelligence, jusqu'a x6.
+
+- Charges de base : **1**
+- ID : `comet_azur`
+
+### Dard d'Elphael
+
+Putrefaction et saignement d'un seul geste, six cumuls chacun.
+
+- Charges de base : **2**
+- ID : `elphael_sting`
+
+### Vase des Geants
+
+Vous scelle dans la ceramique : armure augmentee de 40% de votre Vigueur pour le combat, et les ronces vous protegent.
+
+- Charges de base : **2**
+- ID : `jar_vessel`
