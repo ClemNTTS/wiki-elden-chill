@@ -23,7 +23,11 @@ Caravane perdue, patrouille rare, autel oublié, piège ou choix de route peuven
 
 À partir du **niveau 100**, un contrat propose de retourner dans une zone déjà visitée. Un seul contrat est actif à la fois. Ses objectifs peuvent demander de vaincre des créatures ou des rares, finir des cycles, tuer un boss, atteindre un rang de Ferveur, obtenir un butin donné ou respecter une contrainte (par exemple ne pas mourir ou ne pas utiliser de cendre).
 
-Les contrats sont communs (62 %), rares (30 %) ou légendaires (8 %). Les rares et légendaires peuvent avoir une échéance en cycles, mieux rémunérée mais perdue si elle expire. Un légendaire peut aussi lancer une chaîne de trois contrats dans des zones différentes. Les récompenses sont calculées sur le niveau du joueur : les contrats rares donnent un objet exclusif, les légendaires ajoutent un niveau ; les pièces exclusives de contrat appartiennent aux cinq panoplies d’archétype.
+Les contrats sont communs, rares ou légendaires. Leur tirage commence avec les poids **62 / 30 / 1** : un légendaire est donc rare au départ. Honorer un contrat commun ajoute **1 Faveur**, un rare en ajoute **3**. La Faveur augmente le poids du légendaire jusqu’à 39 points : à son maximum, le prochain tirage a environ **30 %** de chance d’être légendaire. Tirer un légendaire remet la Faveur à zéro.
+
+Les rares et légendaires peuvent avoir une échéance en cycles, mieux rémunérée mais perdue si elle expire. Un légendaire peut aussi lancer une chaîne de trois contrats dans des zones différentes. Les récompenses sont calculées sur le niveau du joueur : les contrats rares donnent un objet exclusif, les légendaires ajoutent un niveau ; les pièces exclusives de contrat appartiennent aux cinq panoplies d’archétype.
+
+Un contrat en cours peut être relancé après **24 heures** à compter de sa demande. Un contrat expiré peut en revanche être remplacé immédiatement. La Faveur et le contrat actif sont conservés à la sauvegarde.
 
 ## Phases de boss
 
