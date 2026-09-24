@@ -2,6 +2,8 @@
 
 Après le Trône de l'Arbre, la renaissance remet à zéro niveaux, stats, runes, inventaire, équipement et campagne. Codex, cendres, préparations, arbre permanent et épreuves restent acquis.
 
+Au Trône, le repli reste bloqué jusqu’à la première victoire sur la Bête d’Elden. Cette victoire ouvre la renaissance, mais vous pouvez ensuite rentrer au camp avant de choisir de renaître.
+
 Chaque renaissance donne **+25 % de runes**, **+10 niveaux maximum** et **2 points d'arbre**.
 
 ## Arbre permanent

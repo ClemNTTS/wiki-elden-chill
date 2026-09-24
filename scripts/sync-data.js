@@ -30,17 +30,18 @@ const { NOKRON } = evaluate("items/nokron.js", ["NOKRON"], itemScope);
 const { RIVER } = evaluate("items/river.js", ["RIVER"], itemScope);
 const { V21_ITEMS } = evaluate("items/v21.js", ["V21_ITEMS"], itemScope);
 const { LANDS_ITEMS } = evaluate("items/lands.js", ["LANDS_ITEMS"], itemScope);
-const { CONTRACT_ITEMS } = evaluate("items/contracts.js", ["CONTRACT_ITEMS"], { ITEM_TYPES, CONTRACT_ITEM_IDS, SETS_PAR_ARCHETYPE, ...stubs });
-const { ITEMS } = evaluate("item.js", ["ITEMS"], { ITEM_TYPES, DEPTHS, NOKRON, RIVER, V21_ITEMS, LANDS_ITEMS, CONTRACT_ITEMS, ...stubs });
+const { MARSH_ITEMS } = evaluate("items/marais.js", ["MARSH_ITEMS"], itemScope);
+const { CONTRACT_ITEMS } = evaluate("items/contracts.js", ["CONTRACT_ITEMS"], { ITEM_TYPES, ITEM_RARITIES, CONTRACT_ITEM_IDS, SETS_PAR_ARCHETYPE, ...stubs });
+const { ITEMS } = evaluate("item.js", ["ITEMS"], { ITEM_TYPES, ITEM_RARITIES, DEPTHS, NOKRON, RIVER, V21_ITEMS, LANDS_ITEMS, MARSH_ITEMS, CONTRACT_ITEMS, ...stubs });
 const { V21_MONSTERS } = evaluate("monsters/v21.js", ["V21_MONSTERS"], stubs);
 const { ENDGAME_MONSTERS, TRIAL_MONSTERS } = evaluate("monsters/endgame.js", ["ENDGAME_MONSTERS", "TRIAL_MONSTERS"], stubs);
 const { LANDS_MONSTERS } = evaluate("monsters/lands.js", ["LANDS_MONSTERS"], stubs);
 const { MONSTERS } = evaluate("monster.js", ["MONSTERS"], { V21_MONSTERS, ENDGAME_MONSTERS, TRIAL_MONSTERS, LANDS_MONSTERS });
 const { BIOMES, LOOT_TABLES } = evaluate("biome.js", ["BIOMES", "LOOT_TABLES"]);
-const { BIOME_GUIDE } = evaluate("world-map.js", ["BIOME_GUIDE"], { BIOMES });
+const { FINAL_BIOME_ID, REBIRTH_NODES, TRIALS, LEVEL_CAP_BASE, LEVEL_PER_MAIN_BOSS, MAIN_BOSS_BIOMES } = evaluate("rebirth.js", ["FINAL_BIOME_ID", "REBIRTH_NODES", "TRIALS", "LEVEL_CAP_BASE", "LEVEL_PER_MAIN_BOSS", "MAIN_BOSS_BIOMES"], { gameState, runtimeState, MAX_LEVEL: 365 });
+const { BIOME_GUIDE, getBandeRecommandee } = evaluate("world-map.js", ["BIOME_GUIDE", "getBandeRecommandee"], { BIOMES, LEVEL_CAP_BASE, LEVEL_PER_MAIN_BOSS, MAIN_BOSS_BIOMES, MAX_LEVEL: 365 });
 const { ASHES_OF_WAR } = evaluate("ashes.js", ["ASHES_OF_WAR"], stubs);
 const { BLESSINGS, PREP_CONSUMABLES, PREPARATION_UNLOCKS } = evaluate("systems.js", ["BLESSINGS", "PREP_CONSUMABLES", "PREPARATION_UNLOCKS"], { BIOMES, ITEMS, BIOME_GUIDE, HAZARD_LABELS, ...stubs });
-const { FINAL_BIOME_ID, REBIRTH_NODES, TRIALS } = evaluate("rebirth.js", ["FINAL_BIOME_ID", "REBIRTH_NODES", "TRIALS"], { gameState, runtimeState, MAX_LEVEL: 365 });
 
 const esc = (v = "") => String(v).replace(/\|/g, "\\|").replace(/\n/g, " ");
 const plain = (v = "") => esc(v).replace(/<[^>]+>/g, "").trim();
@@ -73,7 +74,7 @@ const biomeRows = Object.entries(BIOME_GUIDE).sort((a,b) => (a[1].chapter || "")
   const reward = unlock?.blessingId ? BLESSINGS[unlock.blessingId]?.name : unlock?.consumableId ? PREP_CONSUMABLES[unlock.consumableId]?.name : "—";
   const hazards = (g.hazards || []).map((h) => HAZARD_LABELS[h] || h).join(", ") || "—";
   const rares = (b.rareMonsters || []).map(monsterName).join(", ") || "—";
-  return `| ${esc(b.name || id)} | ${esc(g.chapter)} | ${g.recommendedLevel?.join("–") || "—"} | ${esc(g.danger)} | ${esc(hazards)} | ${esc(rares)} | ${esc(monsterName(b.boss))} | ${esc(reward)} |`;
+  return `| ${esc(b.name || id)} | ${esc(g.chapter)} | ${getBandeRecommandee(id).join("–")} | ${esc(g.danger)} | ${esc(hazards)} | ${esc(rares)} | ${esc(monsterName(b.boss))} | ${esc(reward)} |`;
 }).join("\n");
 write("biomes.md", `# Atlas des biomes\n\n> **${Object.keys(BIOMES).length} biomes** et **${Object.keys(BIOME_GUIDE).length} entrées d'atlas**.\n\nLa campagne forme un graphe à branches. Le chapitre X mène à **${monsterName(BIOMES[FINAL_BIOME_ID]?.boss)}**, dont la victoire ouvre la renaissance. La colonne **Rares possibles** recense les créatures rares susceptibles d’apparaître dans chaque zone.\n\n| Zone | Chapitre | Niveau | Danger | Afflictions | Rares possibles | Boss | Déblocage |\n| --- | --- | ---: | --- | --- | --- | --- | --- |\n${biomeRows}`);
 
@@ -83,7 +84,7 @@ write("preparation.md", `# Préparation d'expédition\n\nChoisissez une bénédi
 
 const nodes = REBIRTH_NODES.map((n) => `| ${esc(n.name)} | ${esc(n.detail)} | ${n.maxRank} |`).join("\n");
 const trials = TRIALS.map((t) => `| ${esc(t.name)} | ${t.suggestedRebirth} | ${esc(t.lore)} |`).join("\n");
-write("rebirth.md", `# Renaissance et épreuves\n\nAprès le Trône de l'Arbre, la renaissance remet à zéro niveaux, stats, runes, inventaire, équipement et campagne. Codex, cendres, préparations, arbre permanent et épreuves restent acquis.\n\nChaque renaissance donne **+25 % de runes**, **+10 niveaux maximum** et **2 points d'arbre**.\n\n## Arbre permanent\n\n| Nœud | Effet par rang | Rang max |\n| --- | --- | ---: |\n${nodes}\n\n## Épreuves\n\n| Épreuve | Renaissance suggérée | Lore |\n| --- | ---: | --- |\n${trials}`);
+write("rebirth.md", `# Renaissance et épreuves\n\nAprès le Trône de l'Arbre, la renaissance remet à zéro niveaux, stats, runes, inventaire, équipement et campagne. Codex, cendres, préparations, arbre permanent et épreuves restent acquis.\n\nAu Trône, le repli reste bloqué jusqu’à la première victoire sur la Bête d’Elden. Cette victoire ouvre la renaissance, mais vous pouvez ensuite rentrer au camp avant de choisir de renaître.\n\nChaque renaissance donne **+25 % de runes**, **+10 niveaux maximum** et **2 points d'arbre**.\n\n## Arbre permanent\n\n| Nœud | Effet par rang | Rang max |\n| --- | --- | ---: |\n${nodes}\n\n## Épreuves\n\n| Épreuve | Renaissance suggérée | Lore |\n| --- | ---: | --- |\n${trials}`);
 
 const version = JSON.parse(read("version.json")).version;
 const counts = { Biomes:Object.keys(BIOMES).length, "Entrées d’atlas":Object.keys(BIOME_GUIDE).length, Monstres:Object.keys(MONSTERS).length, Objets:Object.keys(ITEMS).length, Panoplies:Object.keys(ITEM_SETS).length, Cendres:Object.keys(ASHES_OF_WAR).length, Bénédictions:Object.keys(BLESSINGS).length, Atouts:Object.keys(PREP_CONSUMABLES).length, Épreuves:TRIALS.length };

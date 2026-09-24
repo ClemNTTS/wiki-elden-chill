@@ -34,12 +34,16 @@ Le critique utilise une ressource séparée : **1 point tous les 10 niveaux**, s
 
 Au-dessus de 100 %, l’excédent de chance devient la probabilité d’un **super-critique**, qui double le multiplicateur.
 
+Les dégâts de zone conservent leur rôle contre les groupes ; lorsqu’il ne reste qu’une cible, ils lui infligent désormais **50 %** de leur valeur au lieu d’être perdus.
+
 ## Afflictions
 
 Les afflictions sont posées par certains coups, cendres, objets, dangers de biome ou phases de boss. Elles sont visibles sous les combattants. Il existe deux fonctionnements :
 
 - Les **cumuls** ne disparaissent pas seuls : l’icône affiche leur nombre, jusqu’à ce qu’un seuil les consomme.
 - Les **durées** diminuent au début du tour de la cible. Leur effet se produit alors une dernière fois avant leur disparition.
+
+Les dégâts périodiques de **poison**, **putréfaction** et **brûlure** infligés à un ennemi peuvent critiquer. Leur bonus critique ne vaut que la moitié du bonus normal.
 
 ## Afflictions à cumuls
 
@@ -55,6 +59,12 @@ Le saignement ne possède pas de résistance dédiée : il faut empêcher les ap
 
 La Résistance Gel réduit les charges reçues, sans pouvoir les annuler entièrement.
 
+### Toxine
+
+La Toxine est la montée en puissance propre à la **Faux du Charognard**. Chaque tic de poison qu’elle inflige à un ennemi ajoute 1 cumul de Toxine. À **8 cumuls**, elle explose au prochain coup et ajoute **8 % des PV maximum de la cible + 20** dégâts, plafonnés à **6 fois les dégâts bruts du coup**. Les cumuls du seuil sont consommés et les éventuels excédents restent.
+
+Avec les trois pièces de la panoplie **Charognard toxique**, le seuil tombe à **6 cumuls**. La Toxine n’est pas appliquée par le poison ordinaire : elle nécessite cette arme.
+
 ### Folie
 
 À **8 charges**, la folie explose au prochain coup : elle ajoute **150 % des dégâts bruts du coup + 40**, puis applique **1 tour d’étourdissement**. Huit charges sont consommées et les charges au-delà du seuil sont conservées.
@@ -69,7 +79,7 @@ La Résistance Folie réduit les charges reçues ; elle aide donc à retarder l�
 
 ### Poison
 
-Le poison inflige des dégâts au début de chaque tour pendant sa durée. Sur le joueur, les dégâts dépendent du niveau ; sur un ennemi, ils correspondent à **1 % de ses PV maximum**, augmentés de **50 % de l’Intelligence effective** du joueur. Réappliquer le poison ne cumule pas les dégâts : cela conserve la plus longue durée.
+Le poison inflige des dégâts au début de chaque tour pendant sa durée. Sur le joueur, les dégâts dépendent du niveau ; sur un ennemi, ils correspondent à **1 % de ses PV maximum**, augmentés de **50 % de l’Intelligence effective** du joueur. Réappliquer le poison ne cumule pas les dégâts : cela conserve la plus longue durée. Certains effets peuvent aussi convertir une partie de ces dégâts en soin.
 
 La Résistance Poison réduit à la fois la durée reçue et les dégâts subis, sans jamais supprimer complètement l’effet.
 
@@ -81,7 +91,7 @@ Comme le poison, une nouvelle application prolonge au mieux la durée existante 
 
 ### Brûlure
 
-La brûlure inflige des dégâts au début de chaque tour pendant sa durée. Elle est plus forte quand la cible a déjà perdu des PV : elle prend le plus petit résultat entre **3 % des PV maximum du joueur** (2 % pour un ennemi) et **10 % des PV manquants**. Réappliquer la brûlure conserve la durée la plus longue.
+La brûlure inflige des dégâts au début de chaque tour pendant sa durée. Elle est plus forte quand la cible a déjà perdu des PV : elle prend le plus petit résultat entre **3 % des PV maximum du joueur** (2 % pour un ennemi) et **10 % des PV manquants**. Sur un ennemi, elle reçoit aussi **50 % de l’Intelligence effective** du joueur, plafonnés à la moitié des dégâts infligés pendant le tour. Réappliquer la brûlure conserve la durée la plus longue.
 
 Il n’existe pas de statistique de résistance à la brûlure : les réductions spécifiques offertes par certains équipements restent le moyen de la contenir.
 

@@ -15,6 +15,10 @@ Au rang 3, la Ferveur ajoute un tirage de butin ; au rang 6, elle augmente aussi
 - **Redémarrage automatique** relance le biome après une mort et se coupe après cinq échecs sans cycle nettoyé.
 - **Arrêt après cycle** rentre au camp après le nombre choisi ; zéro signifie ne jamais s’arrêter.
 
+### Temps hors ligne
+
+Le temps passé hors ligne alimente une réserve, jusqu’à **une heure**. Lorsqu’elle est activée pendant une expédition, cette réserve accélère la boucle par **3** : une seconde réelle fait progresser trois secondes de jeu et consomme les deux secondes gagnées. Le jeu rattrape également les minuteurs ralentis par un onglet en arrière-plan, dans une limite qui évite une longue rafale au retour.
+
 ## Événements
 
 Caravane perdue, patrouille rare, autel oublié, piège ou choix de route peuvent accorder des runes, améliorer le butin, forcer une élite, purifier les effets, renforcer un danger ou débloquer une préparation.
